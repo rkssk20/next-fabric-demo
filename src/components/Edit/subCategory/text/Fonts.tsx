@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import Konva from "konva"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 import Font from "@/atoms/Font"
 
@@ -61,10 +60,8 @@ const Fonts = ({ selectKey }: { selectKey: string }) => {
   const [value, setValue] = useState('')
   const [list, setList] = useState(fonts.slice(0, 10))
 
-  console.log(Konva.shapes[selectKey].attrs);
-
   useEffect(() => {
-    setValue(Konva.shapes[selectKey].attrs.fontFamily)
+    setValue('')
   }, [selectKey])
 
   // フォントの無限スクロール

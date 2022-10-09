@@ -1,9 +1,6 @@
-import { useState, useEffect, MouseEvent as MouseEventType } from "react"
+import { useState, useEffect, useRef, MouseEvent as MouseEventType } from "react"
 import { useRouter } from "next/router"
-import Konva from "konva";
-import { Image as ImageType } from "konva/lib/shapes/Image";
-import { Text as TextType } from "konva/lib/shapes/Text"
-import { Line } from "konva/lib/shapes/Line";
+import { fabric } from 'fabric'
 import useImage from "@/hooks/useImage";
 import useScreenWidth from '@/hooks/useScreenWidth'
 import Header from '@/atoms/Header'
@@ -17,12 +14,16 @@ type Props = {
 }
 
 const Edit = ({ cropImage }: Props) => {
-  const [category, setCategory] = useState<number | null>(null)
+  const [canvas, setCanvas] = useState<fabric.Canvas>()
   const [selectKey, setSelectKey] = useState('')
   const image = useImage(cropImage)
   const router = useRouter()
-  const defaultWidth = useScreenWidth()
+  const ref = useRef<HTMLCanvasElement | null>(null)
+  const defaultWidth = useScreenWidth(setCanvas)
+
+  console.log(canvas?.getObjects()[0]);
   
+
   const category_list = [{
     name: 'フィルター',
     icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe43b;</span>
@@ -33,6 +34,40 @@ const Edit = ({ cropImage }: Props) => {
     name: '手書き',
     icon:  <span className="pb-2 text-2xl material-symbols-rounded">&#xe3ae;</span>
   }]
+
+  // キャンバスの作成、画像の追加
+  useEffect(() => {
+    if(!image || !defaultWidth) return
+
+    const fabricCanvas = new fabric.Canvas('canvas', {
+      width: defaultWidth,
+      height:  defaultWidth * 0.5625
+    })
+
+    const fabricImage = new fabric.Image(image, {
+      hasControls: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      scaleX: defaultWidth / image.width,
+      scaleY: (defaultWidth * 0.5625) / image.height
+    })
+
+    fabricImage.on('mousedown', () => {
+      setCanvas(fabricCanvas)
+    }).on('touchstart', () => {
+      setCanvas(fabricCanvas)
+    })
+
+    fabricCanvas.add(fabricImage)
+    fabricCanvas.setActiveObject(fabricImage)
+    // fabricCanvas.renderAll()
+    setCanvas(fabricCanvas)
+
+    return () => {
+      fabricImage.off()
+      fabricCanvas.dispose()
+    }
+  }, [image, defaultWidth])
 
   const handleNext = () => {
     router.push({
@@ -45,80 +80,9 @@ const Edit = ({ cropImage }: Props) => {
 
   const handleCategory = (e: MouseEventType<HTMLButtonElement>, index: number) => {
     if(index === 0) {
-      // @ts-ignore
-      setSelectKey(Konva?.stages[0].children[0].children[0].colorKey)
+       canvas && canvas.setActiveObject(canvas.getObjects()[0])
     }
-
-    setCategory(index)
   }
-
-  useEffect(() => {
-    !cropImage && router.push({
-      pathname: '/',
-      query: null
-    }, undefined, {
-      shallow: true
-    })
-  }, [cropImage])
-
-  useEffect(() => {
-    if(!image || (Konva.stages.length > 0) || !defaultWidth) return
-
-    const parent = document.querySelector('#stage-parent')
-
-    if(!parent) return
-
-    const konvaStage = new Konva.Stage({
-      container: 'container',
-      width: defaultWidth,
-      height: defaultWidth * 0.5625
-    })
-
-    const konvaLayer = new Konva.Layer()
-
-    const konvaImage = new Konva.Image({
-      image,
-      width: parent.clientWidth,
-      height: parent.clientHeight,
-      filters: [
-        Konva.Filters.Brighten,
-        Konva.Filters.Contrast,
-        Konva.Filters.HSV,
-        Konva.Filters.Blur,
-        Konva.Filters.Pixelate,
-        Konva.Filters.Noise
-      ]
-    })
-    .brightness(0)
-    .contrast(0)
-    .saturation(0)
-    .blurRadius(0)
-    .pixelSize(3)
-    .noise(0)
-
-    konvaImage.cache()
-    konvaLayer.add(konvaImage)
-    konvaStage.add(konvaLayer)
-    konvaLayer.draw()
-    setSelectKey(konvaImage.colorKey)
-    setCategory(0)
-
-    konvaStage.on('mousedown touchstart', (e) => {
-      // @ts-ignore
-      setSelectKey(e.target.colorKey)
-
-      setCategory(
-        (e.target instanceof ImageType) ? 0 :
-        (e.target instanceof TextType) ? 1 :
-        (e.target instanceof Line) ? 2 : null
-      )
-    })
-
-    return () => {
-      konvaStage.destroy()
-      // konvaImage.remove()
-    }
-  }, [image, defaultWidth])
   
   return (
     <div
@@ -163,6 +127,7 @@ const Edit = ({ cropImage }: Props) => {
       />
 
       <div
+        id='stage-parent'
         className="
           w-full
           md:w-[496px]
@@ -173,9 +138,8 @@ const Edit = ({ cropImage }: Props) => {
           lg:my-auto
           shadow-[0_0_5px_1px_rgba(0,0,0,0.3)]
         "
-        id='stage-parent'
       >
-        <div id='container' />
+        <canvas id='canvas' ref={ ref } />
       </div>
 
       <div
@@ -212,7 +176,7 @@ const Edit = ({ cropImage }: Props) => {
                 name={ item.name }
                 icon={ item.icon }
                 handle={ handleCategory }
-                select={ category === index }
+                select={  true }
                 index={ index }
               />
             ))
@@ -220,10 +184,10 @@ const Edit = ({ cropImage }: Props) => {
         </div>
 
         {
-          (category !== null) && (
-            (category === 0) ?
-            <Filter selectKey={ selectKey } /> :
-            (category === 1) ?
+          canvas && (
+            (canvas.getActiveObject() instanceof fabric.Image) ?
+            <Filter canvas={ canvas } /> :
+            (canvas.getActiveObject() instanceof fabric.Text) ?
             <TextEdit selectKey={ selectKey } setSelectKey={ setSelectKey } /> :
             <DrawEdit selectKey={ selectKey } />
           )

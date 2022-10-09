@@ -1,83 +1,53 @@
-import { useState, useEffect, ChangeEvent } from "react";
-import Konva from "konva"
+import { useState, ChangeEvent } from "react";
+import { fabric } from "fabric";
 
-const Filter = ({ selectKey }: { selectKey: string }) => {
-  const [brightness, setBrightness] = useState<number>(Konva.shapes[selectKey].attrs.brightness / 0.05)
-  const [contrast, setContrast] = useState<number>(Konva.shapes[selectKey].attrs.contrast / 10)
-  const [saturation, setSaturation] = useState<number>(Konva.shapes[selectKey].attrs.saturation / 0.2)
-  const [blur, setBlur] = useState<number>(Konva.shapes[selectKey].attrs.blurRadius / 2.5)
-  const [pixelate, setPixelate] = useState<number>((Konva.shapes[selectKey].attrs.pixelSize / 3) - 1)
-  const [noise, setNoise] = useState<number>(Konva.shapes[selectKey].attrs.noise / 0.1)
-  const [sepia, setSepia] = useState<number>(() => {
-    const index = Konva.shapes[selectKey].attrs.filters.findIndex((item: any) => (item.name === 'Sepia'))
-    return (index > 0) ? 1 : 0 
-  })
+const Filter = ({ canvas }: { canvas: fabric.Canvas }) => {
+  const [brightness, setBrightness] = useState<number>()
+  const [contrast, setContrast] = useState<number>()
+  const [saturation, setSaturation] = useState<number>()
+  const [blur, setBlur] = useState<number>()
+  const [pixelate, setPixelate] = useState<number>()
+  const [noise, setNoise] = useState<number>()
+  const [sepia, setSepia] = useState<number>()
   
   // 明るさ
   const handleBrightness = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
-    Konva.shapes[selectKey].brightness(number * 0.05)
     setBrightness(number)
   }
 
   // コントラスト
   const handleContrast = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
-    Konva.shapes[selectKey].contrast(number * 10)
     setContrast(number)
   }
 
   // 彩度
   const handleSadturation = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
-    Konva.shapes[selectKey].saturation(number * 0.2)
     setSaturation(number)
   }
 
   // ぼかし
   const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
-    Konva.shapes[selectKey].blurRadius(number * 2.5)
     setBlur(number)
   }
 
   // モザイク
   const handlePixelate = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
-    Konva.shapes[selectKey].pixelSize((number + 1) * 3)
     setPixelate(number)
   }
 
   // ノイズ
   const handleNoise = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
-    Konva.shapes[selectKey].noise(number * 0.1)
     setNoise(number)
   }
 
   // セピア
   const handleSepia = (e: ChangeEvent<HTMLInputElement>) => {
-    if(e.target.value === '1') {
-      Konva.shapes[selectKey].filters([
-        Konva.Filters.Brighten,
-        Konva.Filters.Contrast,
-        Konva.Filters.HSV,
-        Konva.Filters.Blur,
-        Konva.Filters.Pixelate,
-        Konva.Filters.Noise,
-        Konva.Filters.Sepia
-      ])
-    } else {
-      Konva.shapes[selectKey].filters([
-        Konva.Filters.Brighten,
-        Konva.Filters.Contrast,
-        Konva.Filters.HSV,
-        Konva.Filters.Blur,
-        Konva.Filters.Pixelate,
-        Konva.Filters.Noise
-      ])
-    }
-
     setSepia(Number(e.target.value))
   }
 

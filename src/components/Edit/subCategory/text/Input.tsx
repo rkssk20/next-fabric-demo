@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
-import Konva from 'konva'
 
 const Input = ({ selectKey }: { selectKey: string }) => {
   const [text, setText] = useState('')
 
   useEffect(() => {
-    setText(Konva.shapes[selectKey].attrs.text)
+    setText('')
   }, [selectKey])
 
   return (

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import Konva from "konva"
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
 const Color = ({ selectKey }: { selectKey: string }) => {
@@ -9,11 +8,10 @@ const Color = ({ selectKey }: { selectKey: string }) => {
   
   
   useEffect(() => {
-    setValue(Konva.shapes[selectKey].attrs.fill)
+    setValue('')
   }, [selectKey])
 
   const handleColor = (e: string) => {
-    Konva.shapes[selectKey].fill(e)
     setValue(e)
   }
 

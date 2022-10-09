@@ -1,7 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import Konva from 'konva'
-import { Text } from 'konva/lib/shapes/Text'
-import useScreenWidth from '@/hooks/useScreenWidth'
+import { fabric } from 'fabric'
 import SubCategoryButton from '@/atoms/SubCategoryButton'
 import Input from '@/components/Edit/subCategory/text/Input'
 import Format from '@/components/Edit/subCategory/text/Format'
@@ -15,7 +13,6 @@ type Props = {
 
 const TextEdit = ({ selectKey, setSelectKey }: Props) => {
   const [tabNumber, setTabNumber] = useState<number>(0)
-  const defaultWidth = useScreenWidth()
   
   const subcategory_list = [{
     name: '入力',
@@ -32,31 +29,11 @@ const TextEdit = ({ selectKey, setSelectKey }: Props) => {
   }]
 
   const handleAdd = () => {
-    const parent = document.querySelector('#stage-parent')
-
-    if(!parent || !defaultWidth) return
-
-    const text: Text = new Konva.Text({
-      x:  (defaultWidth / 2) - 87.5,
-      y:  ((defaultWidth * 0.5625) / 2) - 12.5,
-      text: 'テキストを入力',
-      fontSize: 25,
-      fontFamily: 'Noto Sans JP',
-      lineHeight: 1.5,
-      fill: '#ffffff',
-      align: 'left',
-      verticalAlign: 'middle',
-      draggable: true, 
-    }).on('dragend', () => {
-      text.absolutePosition({
-        x: ((text.attrs.x - text.textWidth) < (-text.textWidth * 2)) ? 5 : (text.attrs.x > (parent.clientWidth - 10)) ? (parent.clientWidth - 50) : text.attrs.x,
-        y: ((text.attrs.y - text.textHeight) < (-text.textHeight * 2)) ? 5 : (text.attrs.y > (parent.clientHeight - 10)) ? (parent.clientHeight - 50) : text.attrs.y
-      })
-    })
-
     setTabNumber(0)
-    Konva.stages[0].children && Konva.stages[0].children[0].add(text)
-    setSelectKey(text.colorKey)
+
+    
+
+    setSelectKey('')
   }
 
   return (
@@ -105,7 +82,7 @@ const TextEdit = ({ selectKey, setSelectKey }: Props) => {
                 key={ item.name }
                 name={ item.name }
                 icon={ item.icon }
-                disabled={ !(Konva.shapes[selectKey] instanceof Text) }
+                disabled={ false }
                 handle={ () => setTabNumber(index) }
                 select={ (tabNumber === index) }
               />
@@ -115,7 +92,7 @@ const TextEdit = ({ selectKey, setSelectKey }: Props) => {
       </div>
 
       {
-        (Konva.shapes[selectKey] instanceof Text)  &&
+        
         (tabNumber === 0) ?
         <Input selectKey={ selectKey } /> :
         (tabNumber === 1) ?
