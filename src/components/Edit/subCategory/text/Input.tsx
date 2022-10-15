@@ -24,8 +24,6 @@ const Input = ({ canvas }: { canvas: fabric.Canvas }) => {
       value={ text }
       onChange={ e => {
         setText(e.target.value)
-        // @ts-ignore 
-        Konva.shapes[selectKey].text(e.target.value)
       }}
     />
   )

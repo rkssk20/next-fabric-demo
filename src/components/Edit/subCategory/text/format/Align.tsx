@@ -47,8 +47,6 @@ const Align = ({ align, setAlign, selectKey }: Props) => {
                   `
               }
               onClick={ () => {
-                // @ts-ignore
-                Konva.shapes[selectKey].align(item)
                 setAlign(item)
               }}
             >

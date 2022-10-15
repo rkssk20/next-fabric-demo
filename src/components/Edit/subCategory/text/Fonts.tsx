@@ -78,8 +78,6 @@ const Fonts = ({ canvas }: { canvas: fabric.Canvas }) => {
   // フォント変更
   const handleFont = (fontFamily: string) => {    
     setValue(fontFamily)
-    // @ts-ignore
-    Konva.shapes[selectKey].fontFamily(fontFamily)
   }
 
   return (

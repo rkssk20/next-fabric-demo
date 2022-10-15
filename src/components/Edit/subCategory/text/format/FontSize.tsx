@@ -10,8 +10,6 @@ const FontSize = ({ fontSize, setFontSize, selectKey }: Props) => {
   const handleFontSize = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
     setFontSize(number)
-    // @ts-ignore
-    Konva.shapes[selectKey].fontSize(number)
   }
 
   return (
