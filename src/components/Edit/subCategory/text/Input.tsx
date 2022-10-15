@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
+import { fabric } from 'fabric'
 
-const Input = ({ selectKey }: { selectKey: string }) => {
+const Input = ({ canvas }: { canvas: fabric.Canvas }) => {
   const [text, setText] = useState('')
 
   useEffect(() => {
     setText('')
-  }, [selectKey])
+  }, [])
 
   return (
     <textarea

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, MouseEvent as MouseEventType } from "react"
+import { useState, useEffect, MouseEvent as MouseEventType } from "react"
 import { useRouter } from "next/router"
 import { fabric } from 'fabric'
 import useImage from "@/hooks/useImage";
@@ -15,14 +15,11 @@ type Props = {
 
 const Edit = ({ cropImage }: Props) => {
   const [canvas, setCanvas] = useState<fabric.Canvas>()
+  const [category, setCategory] = useState<number | null>(null)
   const [selectKey, setSelectKey] = useState('')
   const image = useImage(cropImage)
   const router = useRouter()
-  const ref = useRef<HTMLCanvasElement | null>(null)
   const defaultWidth = useScreenWidth(setCanvas)
-
-  console.log(canvas?.getObjects()[0]);
-  
 
   const category_list = [{
     name: 'フィルター',
@@ -49,25 +46,28 @@ const Edit = ({ cropImage }: Props) => {
       lockMovementX: true,
       lockMovementY: true,
       scaleX: defaultWidth / image.width,
-      scaleY: (defaultWidth * 0.5625) / image.height
-    })
-
-    fabricImage.on('mousedown', () => {
-      setCanvas(fabricCanvas)
+      scaleY: (defaultWidth * 0.5625) / image.height,
+      filters: []
+    }).on('mousedown', () => {
+      // setCanvas(fabricCanvas)
+      setCategory(0)
     }).on('touchstart', () => {
-      setCanvas(fabricCanvas)
+      // setCanvas(fabricCanvas)
+      setCategory(0)
     })
 
     fabricCanvas.add(fabricImage)
     fabricCanvas.setActiveObject(fabricImage)
-    // fabricCanvas.renderAll()
+    fabricCanvas.renderAll()
+
     setCanvas(fabricCanvas)
+    setCategory(0)
 
     return () => {
       fabricImage.off()
       fabricCanvas.dispose()
     }
-  }, [image, defaultWidth])
+  }, [image])
 
   const handleNext = () => {
     router.push({
@@ -79,9 +79,9 @@ const Edit = ({ cropImage }: Props) => {
   }
 
   const handleCategory = (e: MouseEventType<HTMLButtonElement>, index: number) => {
-    if(index === 0) {
-       canvas && canvas.setActiveObject(canvas.getObjects()[0])
-    }
+    (index === 0) && canvas && canvas.setActiveObject(canvas.getObjects()[0])
+
+    setCategory(index)
   }
   
   return (
@@ -139,7 +139,7 @@ const Edit = ({ cropImage }: Props) => {
           shadow-[0_0_5px_1px_rgba(0,0,0,0.3)]
         "
       >
-        <canvas id='canvas' ref={ ref } />
+        <canvas id='canvas' />
       </div>
 
       <div
@@ -176,7 +176,7 @@ const Edit = ({ cropImage }: Props) => {
                 name={ item.name }
                 icon={ item.icon }
                 handle={ handleCategory }
-                select={  true }
+                select={ category === index }
                 index={ index }
               />
             ))
@@ -184,11 +184,11 @@ const Edit = ({ cropImage }: Props) => {
         </div>
 
         {
-          canvas && (
-            (canvas.getActiveObject() instanceof fabric.Image) ?
-            <Filter canvas={ canvas } /> :
-            (canvas.getActiveObject() instanceof fabric.Text) ?
-            <TextEdit selectKey={ selectKey } setSelectKey={ setSelectKey } /> :
+          canvas && (category !== null) && (
+            (category === 0) ?
+            <Filter canvas={ canvas } setCanvas={ setCanvas } /> :
+            (category === 1) ?
+            <TextEdit canvas={ canvas } /> :
             <DrawEdit selectKey={ selectKey } />
           )
         }

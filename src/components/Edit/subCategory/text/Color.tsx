@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
+import { fabric } from "fabric";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
-const Color = ({ selectKey }: { selectKey: string }) => {
+const Color = ({ canvas }: { canvas: fabric.Canvas }) => {
   const [value, setValue] = useState('')
 
   console.log(value);
@@ -9,7 +10,7 @@ const Color = ({ selectKey }: { selectKey: string }) => {
   
   useEffect(() => {
     setValue('')
-  }, [selectKey])
+  }, [])
 
   const handleColor = (e: string) => {
     setValue(e)

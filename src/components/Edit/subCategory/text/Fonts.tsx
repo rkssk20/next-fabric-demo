@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { fabric } from "fabric"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 import Font from "@/atoms/Font"
 
@@ -56,13 +57,13 @@ const fonts = [
   'Zen Old Mincho'
 ]
 
-const Fonts = ({ selectKey }: { selectKey: string }) => {
+const Fonts = ({ canvas }: { canvas: fabric.Canvas }) => {
   const [value, setValue] = useState('')
   const [list, setList] = useState(fonts.slice(0, 10))
 
   useEffect(() => {
     setValue('')
-  }, [selectKey])
+  }, [])
 
   // フォントの無限スクロール
   const handleMore = () => { 

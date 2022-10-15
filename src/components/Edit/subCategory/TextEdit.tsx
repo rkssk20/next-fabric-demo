@@ -7,11 +7,10 @@ import Color from '@/components/Edit/subCategory/text/Color'
 import Align from '@/components/Edit/subCategory/text/Fonts'
 
 type Props = {
-  selectKey: string
-  setSelectKey: Dispatch<SetStateAction<string>>
+  canvas: fabric.Canvas
 }
 
-const TextEdit = ({ selectKey, setSelectKey }: Props) => {
+const TextEdit = ({ canvas }: Props) => {
   const [tabNumber, setTabNumber] = useState<number>(0)
   
   const subcategory_list = [{
@@ -29,11 +28,18 @@ const TextEdit = ({ selectKey, setSelectKey }: Props) => {
   }]
 
   const handleAdd = () => {
-    setTabNumber(0)
-
     
+    const textCanvas = new fabric.Textbox('テキストを入力', {
+      fontFamily: 'Noto Sans JP',
+      fill: 'white'
+      
+    })
+    
+    canvas.add(textCanvas)
+    canvas.setActiveObject(textCanvas)
+    canvas.renderAll()
 
-    setSelectKey('')
+    setTabNumber(0)
   }
 
   return (
@@ -94,13 +100,13 @@ const TextEdit = ({ selectKey, setSelectKey }: Props) => {
       {
         
         (tabNumber === 0) ?
-        <Input selectKey={ selectKey } /> :
+        <Input canvas={ canvas } /> :
         (tabNumber === 1) ?
-        <Format selectKey={ selectKey } /> :
+        <Format canvas={ canvas } /> :
         (tabNumber === 2) ?
-        <Color selectKey={ selectKey } /> :
+        <Color canvas={ canvas } /> :
         (tabNumber === 3) &&
-        <Align selectKey={ selectKey } />
+        <Align canvas={ canvas } />
       }
     </>
   )

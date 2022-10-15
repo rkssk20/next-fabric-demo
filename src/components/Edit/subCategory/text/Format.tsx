@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
+import { fabric } from "fabric"
 import Style from '@/components/Edit/subCategory/text/format/Style'
 import Align from '@/components/Edit/subCategory/text/format/Align'
 import FontSize from '@/components/Edit/subCategory/text/format/FontSize'
 
-const Format = ({ selectKey }: { selectKey: string }) => {
+const Format = ({ canvas }: { canvas: fabric.Canvas }) => {
   const [style, setStyle] = useState<string[]>([])
   const [align, setAlign] = useState<string>('')
   const [fontSize, setFontSize] = useState<number | null>(null)
@@ -11,11 +12,11 @@ const Format = ({ selectKey }: { selectKey: string }) => {
   useEffect(() => {
     setAlign('')
     // setFontSize()
-  }, [selectKey])
+  }, [])
 
   return (
     <div className="px-6 overflow-y-scroll">
-      <Style
+      {/* <Style
         style={ style }
         setStyle={ setStyle }
         selectKey={ selectKey }
@@ -34,7 +35,7 @@ const Format = ({ selectKey }: { selectKey: string }) => {
           setFontSize={ setFontSize }
           selectKey={ selectKey }
         />
-      }
+      } */}
     </div>
   )
 }
