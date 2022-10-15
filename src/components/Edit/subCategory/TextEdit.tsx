@@ -8,15 +8,13 @@ import Align from '@/components/Edit/subCategory/text/Fonts'
 
 type Props = {
   canvas: fabric.Canvas
+  setCanvas: Dispatch<SetStateAction<fabric.Canvas | undefined>>
 }
 
-const TextEdit = ({ canvas }: Props) => {
+const TextEdit = ({ canvas, setCanvas }: Props) => {
   const [tabNumber, setTabNumber] = useState<number>(0)
   
   const subcategory_list = [{
-    name: '入力',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe312;</span>
-  }, {
     name: 'フォーマット',
     icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe23c;</span>
   }, {
@@ -28,15 +26,26 @@ const TextEdit = ({ canvas }: Props) => {
   }]
 
   const handleAdd = () => {
-    
     const textCanvas = new fabric.Textbox('テキストを入力', {
+      originX: 'center',
+      originY: 'center',
+      top: canvas.height ? ((canvas.height / canvas.getZoom()) / 2) : 0,
+      left: canvas.width ? ((canvas.width / canvas.getZoom()) / 2) : 0,
       fontFamily: 'Noto Sans JP',
+      fontSize: 30,
       fill: 'white'
-      
     })
-    
-    canvas.add(textCanvas)
-    canvas.setActiveObject(textCanvas)
+
+    setCanvas(prev => {
+      if(!prev) return
+
+      prev.add(textCanvas)
+      prev.setActiveObject(textCanvas)
+      prev.renderAll()
+
+      return prev
+    })
+
     canvas.renderAll()
 
     setTabNumber(0)
@@ -98,15 +107,16 @@ const TextEdit = ({ canvas }: Props) => {
       </div>
 
       {
-        
-        (tabNumber === 0) ?
-        <Input canvas={ canvas } /> :
-        (tabNumber === 1) ?
-        <Format canvas={ canvas } /> :
-        (tabNumber === 2) ?
-        <Color canvas={ canvas } /> :
-        (tabNumber === 3) &&
-        <Align canvas={ canvas } />
+        (canvas.getActiveObject().type === 'textbox') && (
+          (tabNumber === 0) ?
+          // <Input canvas={ canvas } /> :
+          <Format canvas={ canvas } /> :
+          (tabNumber === 1) ?
+          <Color canvas={ canvas } /> :
+          (tabNumber === 2) &&
+          <Align canvas={ canvas } />
+          // (tabNumber === 3) &&
+        )
       }
     </>
   )

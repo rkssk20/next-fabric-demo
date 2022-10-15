@@ -1,8 +1,7 @@
-import { useState, useEffect, MouseEvent as MouseEventType } from "react"
+import { useState, MouseEvent as MouseEventType } from "react"
 import { useRouter } from "next/router"
-import { fabric } from 'fabric'
+import useCanvas from "@/hooks/useCanvas";
 import useImage from "@/hooks/useImage";
-import useScreenWidth from '@/hooks/useScreenWidth'
 import Header from '@/atoms/Header'
 import CategoryButton from "@/atoms/CategoryButton";
 import TextEdit from '@/components/Edit/subCategory/TextEdit'
@@ -14,12 +13,13 @@ type Props = {
 }
 
 const Edit = ({ cropImage }: Props) => {
-  const [canvas, setCanvas] = useState<fabric.Canvas>()
   const [category, setCategory] = useState<number | null>(null)
   const [selectKey, setSelectKey] = useState('')
-  const image = useImage(cropImage)
   const router = useRouter()
-  const defaultWidth = useScreenWidth(setCanvas)
+  const image = useImage(cropImage)
+  const { canvas, setCanvas } = useCanvas(image, setCategory)
+
+  console.log(canvas);
 
   const category_list = [{
     name: 'フィルター',
@@ -31,43 +31,6 @@ const Edit = ({ cropImage }: Props) => {
     name: '手書き',
     icon:  <span className="pb-2 text-2xl material-symbols-rounded">&#xe3ae;</span>
   }]
-
-  // キャンバスの作成、画像の追加
-  useEffect(() => {
-    if(!image || !defaultWidth) return
-
-    const fabricCanvas = new fabric.Canvas('canvas', {
-      width: defaultWidth,
-      height:  defaultWidth * 0.5625
-    })
-
-    const fabricImage = new fabric.Image(image, {
-      hasControls: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      scaleX: defaultWidth / image.width,
-      scaleY: (defaultWidth * 0.5625) / image.height,
-      filters: []
-    }).on('mousedown', () => {
-      // setCanvas(fabricCanvas)
-      setCategory(0)
-    }).on('touchstart', () => {
-      // setCanvas(fabricCanvas)
-      setCategory(0)
-    })
-
-    fabricCanvas.add(fabricImage)
-    fabricCanvas.setActiveObject(fabricImage)
-    fabricCanvas.renderAll()
-
-    setCanvas(fabricCanvas)
-    setCategory(0)
-
-    return () => {
-      fabricImage.off()
-      fabricCanvas.dispose()
-    }
-  }, [image])
 
   const handleNext = () => {
     router.push({
@@ -186,9 +149,9 @@ const Edit = ({ cropImage }: Props) => {
         {
           canvas && (category !== null) && (
             (category === 0) ?
-            <Filter canvas={ canvas } setCanvas={ setCanvas } /> :
+            <Filter canvas={ canvas } /> :
             (category === 1) ?
-            <TextEdit canvas={ canvas } /> :
+            <TextEdit canvas={ canvas } setCanvas={ setCanvas } /> :
             <DrawEdit selectKey={ selectKey } />
           )
         }

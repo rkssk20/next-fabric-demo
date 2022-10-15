@@ -2,11 +2,6 @@ import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { fabric } from "fabric";
 import { Image } from "fabric/fabric-impl";
 
-type Props = {
-  canvas: fabric.Canvas
-  setCanvas: Dispatch<SetStateAction<fabric.Canvas | undefined>>
-}
-
 type StateType = {
   value: number,
   index: number
@@ -22,7 +17,7 @@ type applyFilterValueType = applyFilterType & {
   index: number
 }
 
-const Filter = ({ canvas, setCanvas }: Props) => {
+const Filter = ({ canvas }: { canvas: fabric.Canvas }) => {
   const [brightness, setBrightness] = useState<StateType>(null)
   const [contrast, setContrast] = useState<StateType>(null)
   const [saturation, setSaturation] = useState<StateType>(null)
@@ -49,8 +44,7 @@ const Filter = ({ canvas, setCanvas }: Props) => {
 
   // フィルターの追加
   const applyFilter = ({ filter, value, setState }: applyFilterType) => {
-    const prev = canvas
-    const obj = prev.getActiveObject() as unknown as Image
+    const obj = canvas.getActiveObject() as unknown as Image
     const filters = obj.filters as (boolean | fabric.IBrightnessFilter)[]
 
     if(!filters) return
@@ -65,9 +59,7 @@ const Filter = ({ canvas, setCanvas }: Props) => {
     })
 
     obj.applyFilters()
-    prev.renderAll()
-
-    setCanvas(prev)
+    canvas.renderAll()
   }
   
   // フィルターの値を変更

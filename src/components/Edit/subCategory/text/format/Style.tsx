@@ -1,12 +1,119 @@
-import { Dispatch, SetStateAction } from "react"
+import { useState, useEffect } from "react"
 
-type Props = {
-  style: string[]
-  setStyle: Dispatch<SetStateAction<string[]>>
-  selectKey: string
+type ActiveObjectType ={
+  fontWeight: 'normal' | 'bold'
+  fontStyle: 'normal' | 'italic'
+  underline: boolean
+  linethrough: boolean
 }
 
-const Style = ({ style, setStyle, selectKey }: Props) => {
+const Style = ({ canvas }: { canvas: fabric.Canvas}) => {
+  const [bold, setBold] = useState(false)
+  const [italic, setItalic] = useState(false)
+  const [underline, setUnderline] = useState(false)
+  const [linethrough, setLinethrough] = useState(false)
+
+  useEffect(() => {
+    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
+    activeObject.fontWeight === 'bold' && setBold(true)
+    activeObject.fontStyle === 'italic' && setItalic(true)
+    activeObject.underline && setUnderline(true)
+    activeObject.linethrough && setLinethrough(true)
+  }, [canvas])
+
+  // 文字を太くする
+  const handleBold = () => {
+    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
+
+    if(activeObject.fontWeight === 'normal') {
+      activeObject.fontWeight = 'bold'
+      setBold(true)
+    } else {
+      activeObject.fontWeight = 'normal'
+      setBold(false)
+    }
+
+    canvas.renderAll()
+  }
+
+  // 文字を斜めにする
+  const handleItalic = () => {
+    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
+
+    if(activeObject.fontStyle === 'normal') {
+      activeObject.fontStyle = 'italic'
+      setItalic(true)
+    } else {
+      activeObject.fontStyle = 'normal'
+      setItalic(false)
+    }
+
+    canvas.renderAll()
+  }
+  
+  // 文字に下線をつける
+  const handleUnderline = () => {
+    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType    
+  
+    if(!activeObject.underline) {
+      activeObject.underline = true
+      setUnderline(true)
+    } else {
+      activeObject.underline = false
+      setUnderline(false)
+    }
+  
+    canvas.getActiveObject().set('dirty', true)
+    canvas.renderAll()
+  }
+  
+  // 文字に打ち消し線をつける
+  const handleLinethrough = () => {
+    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
+  
+    if(!activeObject.linethrough) {
+      activeObject.linethrough = true
+      setLinethrough(true)
+    } else {
+      activeObject.linethrough = false
+      setLinethrough(false)
+    }
+  
+    canvas.getActiveObject().set('dirty', true)
+    canvas.renderAll()
+  }
+
+  const styleList = [{
+    value: 'bold',
+    handle: handleBold,
+    selected: bold,
+    icon:
+    <div className="text-2xl material-symbols-rounded">
+      &#xe238;
+    </div>
+  }, {
+    value: 'italic',
+    handle: handleItalic,
+    selected: italic,
+    icon: <div className="text-2xl material-symbols-rounded">
+    &#xe23f;
+  </div>
+  }, {
+    value: 'underline',
+    handle: handleUnderline,
+    selected: underline,
+    icon: <div className="text-2xl material-symbols-rounded">
+    &#xe249;
+  </div>
+  }, {
+    value: 'linethrough',
+    handle: handleLinethrough,
+    selected: linethrough,
+    icon: <div className="text-2xl material-symbols-rounded">
+    &#xe246;
+  </div>
+  }]
+
   return (
     <div className="mt-6">
       <p>スタイル</p>
@@ -17,20 +124,19 @@ const Style = ({ style, setStyle, selectKey }: Props) => {
           mt-2
           mx-auto
           flex
-          justify-center
+          justify-between
           overflow-x-scroll
         "
       >
         {
-          ['bold', 'italic'].map(item => (
+          styleList.map(item => (
             <button
-              key={ item }
+              key={ item.value }
               className={
                 `
                   min-w-[70px]
                   min-h-[70px]
                   p-2
-                  mx-4
                   text-xs
                   rounded-2xl
                   duration-200
@@ -39,31 +145,12 @@ const Style = ({ style, setStyle, selectKey }: Props) => {
                   border-solid
                   hover:bg-[#efefef]
                   active:bg-[#e5e5e5]
-                  ${ (style.includes(item)) && 'bg-[#e5e5e5]' }
+                  ${ item.selected && 'bg-[#e5e5e5]' }
                   `
               }
-              onClick={ () => {
-                if(style.includes(item)) {
-                  setStyle(prev => prev.filter(i => i !== item))
-                } else {
-                  if(style.length === 1) {
-                    setStyle(prev => [...prev, item]);
-                  } else {
-                    setStyle(prev => [...prev, item]);
-                  }
-                }
-              }}
+              onClick={ item.handle }
             >
-              {
-                (item === 'bold') ? 
-                  <div className="text-2xl material-symbols-rounded">
-                    &#xe238;
-                  </div>
-                  :
-                  <div className="text-2xl material-symbols-rounded">
-                    &#xe23f;
-                  </div>
-              }
+              { item.icon }
             </button>
           ))
         }

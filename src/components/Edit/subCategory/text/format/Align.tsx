@@ -1,12 +1,14 @@
-import { Dispatch, SetStateAction } from "react"
+import { useState, useEffect } from "react"
 
-type Props = {
-  align: string
-  setAlign: Dispatch<SetStateAction<string>>
-  selectKey: string
-}
+const Align = ({ canvas }: { canvas: fabric.Canvas }) => {
+  const [align, setAlign] = useState('')
 
-const Align = ({ align, setAlign, selectKey }: Props) => {
+  useEffect(() => {
+    const activeObject = canvas.getActiveObject() as unknown as { textAlign: 'left' | 'center' | 'right' }
+
+    setAlign(activeObject.textAlign)
+  }, [canvas])
+
   return (
     <div className="mt-6">
       <p>整列</p>
@@ -47,6 +49,9 @@ const Align = ({ align, setAlign, selectKey }: Props) => {
                   `
               }
               onClick={ () => {
+                // @ts-ignore
+                canvas.getActiveObject().textAlign = item
+                canvas.renderAll()
                 setAlign(item)
               }}
             >

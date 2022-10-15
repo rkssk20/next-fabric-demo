@@ -1,41 +1,26 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { fabric } from "fabric"
 import Style from '@/components/Edit/subCategory/text/format/Style'
 import Align from '@/components/Edit/subCategory/text/format/Align'
 import FontSize from '@/components/Edit/subCategory/text/format/FontSize'
 
 const Format = ({ canvas }: { canvas: fabric.Canvas }) => {
-  const [style, setStyle] = useState<string[]>([])
-  const [align, setAlign] = useState<string>('')
   const [fontSize, setFontSize] = useState<number | null>(null)
 
-  useEffect(() => {
-    setAlign('')
-    // setFontSize()
-  }, [])
-
-  return (
+   return (
     <div className="px-6 overflow-y-scroll">
-      {/* <Style
-        style={ style }
-        setStyle={ setStyle }
-        selectKey={ selectKey }
-      />
+      <Style canvas={ canvas } />
 
-      <Align
-        align={ align }
-        setAlign={ setAlign }
-        selectKey={ selectKey }
-      />
+      <Align canvas={ canvas } />
 
       {
         fontSize &&
         <FontSize
           fontSize={ fontSize }
           setFontSize={ setFontSize }
-          selectKey={ selectKey }
+          canvas={ canvas }
         />
-      } */}
+      }
     </div>
   )
 }
