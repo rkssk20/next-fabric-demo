@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react"
 
-const Align = ({ canvas }: { canvas: fabric.Canvas }) => {
+const Align = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [align, setAlign] = useState('')
 
   useEffect(() => {
-    const activeObject = canvas.getActiveObject() as unknown as { textAlign: 'left' | 'center' | 'right' }
+    activeObject.textAlign && setAlign(activeObject.textAlign)
+  }, [activeObject])
 
-    setAlign(activeObject.textAlign)
-  }, [canvas])
+  // 整列の変更
+  const handleAlign = (item: string) => {
+    activeObject.textAlign = item
+    activeObject.canvas?.renderAll()
+    setAlign(item)
+  }
 
   return (
     <div className="mt-6">
@@ -48,31 +53,30 @@ const Align = ({ canvas }: { canvas: fabric.Canvas }) => {
                   }
                   `
               }
-              onClick={ () => {
-                // @ts-ignore
-                canvas.getActiveObject().textAlign = item
-                canvas.renderAll()
-                setAlign(item)
-              }}
+              onClick={ () => handleAlign(item) }
             >
               {
                 (item === 'left') ? 
-                  <div className="pb-2 text-2xl material-symbols-rounded">
-                    &#xe236;
-                  </div>
+                  <>
+                    <div className="pb-2 text-2xl material-symbols-rounded">
+                      &#xe236;
+                    </div>
+                    左
+                  </>
                 : (item === 'center') ?
-                  <div className="pb-2 text-2xl material-symbols-rounded">
-                    &#xe234;
-                  </div>
+                  <>
+                    <div className="pb-2 text-2xl material-symbols-rounded">
+                      &#xe234;
+                    </div>
+                    中央
+                  </>
                 :
-                  <div className="pb-2 text-2xl material-symbols-rounded">
-                    &#xe237;
-                  </div>
-              }
-
-              {
-                (item === 'left') ? '左' :
-                (item === 'center') ? '中央' : '右'
+                  <>
+                    <div className="pb-2 text-2xl material-symbols-rounded">
+                      &#xe237;
+                    </div>
+                    右
+                  </>
               }
             </button>
           ))

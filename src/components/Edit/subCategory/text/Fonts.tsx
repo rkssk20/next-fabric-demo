@@ -57,7 +57,7 @@ const fonts = [
   'Zen Old Mincho'
 ]
 
-const Fonts = ({ canvas }: { canvas: fabric.Canvas }) => {
+const Fonts = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [value, setValue] = useState('')
   const [list, setList] = useState(fonts.slice(0, 10))
 

@@ -1,4 +1,4 @@
-const DrawEdit = ({ selectKey }: { selectKey: string }) => {
+const DrawEdit = ({ activeObject }: { activeObject: fabric.Object }) => {
   return (
     <div>
       <button>

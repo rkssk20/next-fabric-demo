@@ -3,10 +3,10 @@ import type { ChangeEvent, Dispatch, SetStateAction } from "react"
 type Props = {
   fontSize: number
   setFontSize: Dispatch<SetStateAction<number | null>>
-  canvas: fabric.Canvas
+  activeObject: fabric.Text
 }
 
-const FontSize = ({ fontSize, setFontSize, canvas }: Props) => {
+const FontSize = ({ fontSize, setFontSize, activeObject }: Props) => {
   const handleFontSize = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value)
     setFontSize(number)

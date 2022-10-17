@@ -1,4 +1,4 @@
-import { useState, MouseEvent as MouseEventType } from "react"
+import { useState, MouseEvent } from "react"
 import { useRouter } from "next/router"
 import useCanvas from "@/hooks/useCanvas";
 import useImage from "@/hooks/useImage";
@@ -8,18 +8,11 @@ import TextEdit from '@/components/Edit/subCategory/TextEdit'
 import DrawEdit from '@/components/Edit/subCategory/DrawEdit'
 import Filter from '@/components/Edit/category/Filter'
 
-type Props = {
-  cropImage: string
-}
-
-const Edit = ({ cropImage }: Props) => {
+const Edit = ({ cropImage }: { cropImage: string }) => {
   const [category, setCategory] = useState<number | null>(null)
-  const [selectKey, setSelectKey] = useState('')
   const router = useRouter()
   const image = useImage(cropImage)
-  const { canvas, setCanvas } = useCanvas(image, setCategory)
-
-  console.log(canvas);
+  const { activeObject, setActiveObject } = useCanvas(image, setCategory)
 
   const category_list = [{
     name: 'フィルター',
@@ -41,8 +34,8 @@ const Edit = ({ cropImage }: Props) => {
     })
   }
 
-  const handleCategory = (e: MouseEventType<HTMLButtonElement>, index: number) => {
-    (index === 0) && canvas && canvas.setActiveObject(canvas.getObjects()[0])
+  const handleCategory = (e: MouseEvent<HTMLButtonElement>, index: number) => {
+    (index === 0) && setActiveObject(prev => prev?.canvas?.getObjects()[0])
 
     setCategory(index)
   }
@@ -65,6 +58,7 @@ const Edit = ({ cropImage }: Props) => {
         overflow-hidden
       "
     >
+      {/* ヘッダー */}
       <Header
         title='画像を編集'
         backIcon={
@@ -89,6 +83,7 @@ const Edit = ({ cropImage }: Props) => {
         }
       />
 
+      {/* canvas */}
       <div
         id='stage-parent'
         className="
@@ -120,6 +115,7 @@ const Edit = ({ cropImage }: Props) => {
           height: (window.innerWidth < 768) ? `calc(100% - ${ document.querySelector('#stage-parent')?.clientHeight }px)` : '100%'
         }}
       >
+        {/* 大カテゴリの選択 */}
         <div
           className="
             w-full
@@ -146,13 +142,14 @@ const Edit = ({ cropImage }: Props) => {
           }
         </div>
 
+        {/* 画像の編集 */}
         {
-          canvas && (category !== null) && (
+          activeObject && (category !== null) && (
             (category === 0) ?
-            <Filter canvas={ canvas } /> :
+            <Filter activeObject={ activeObject as fabric.Image } /> :
             (category === 1) ?
-            <TextEdit canvas={ canvas } setCanvas={ setCanvas } /> :
-            <DrawEdit selectKey={ selectKey } />
+            <TextEdit activeObject={ activeObject } setActiveObject={ setActiveObject } /> :
+            <DrawEdit activeObject={ activeObject } />
           )
         }
       </div>

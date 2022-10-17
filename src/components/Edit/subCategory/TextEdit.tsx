@@ -1,18 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { fabric } from 'fabric'
 import SubCategoryButton from '@/atoms/SubCategoryButton'
-import Input from '@/components/Edit/subCategory/text/Input'
 import Format from '@/components/Edit/subCategory/text/Format'
 import Color from '@/components/Edit/subCategory/text/Color'
-import Align from '@/components/Edit/subCategory/text/Fonts'
+import Fonts from '@/components/Edit/subCategory/text/Fonts'
 
-type Props = {
-  canvas: fabric.Canvas
-  setCanvas: Dispatch<SetStateAction<fabric.Canvas | undefined>>
-}
-
-const TextEdit = ({ canvas, setCanvas }: Props) => {
-  const [tabNumber, setTabNumber] = useState<number>(0)
+const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Object, setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>> }) => {
+  const [tabNumber, setTabNumber] = useState<number>(0)  
   
   const subcategory_list = [{
     name: 'フォーマット',
@@ -26,33 +20,31 @@ const TextEdit = ({ canvas, setCanvas }: Props) => {
   }]
 
   const handleAdd = () => {
+    const width = activeObject.canvas?.width
+    const height = activeObject.canvas?.height
+    const zoom = activeObject.canvas?.getZoom()
+
     const textCanvas = new fabric.Textbox('テキストを入力', {
       originX: 'center',
       originY: 'center',
-      top: canvas.height ? ((canvas.height / canvas.getZoom()) / 2) : 0,
-      left: canvas.width ? ((canvas.width / canvas.getZoom()) / 2) : 0,
+      top: (height && zoom)? ((height / zoom) / 2) : 0,
+      left: (width && zoom) ? ((width / zoom) / 2) : 0,
       fontFamily: 'Noto Sans JP',
       fontSize: 30,
       fill: 'white'
     })
 
-    setCanvas(prev => {
-      if(!prev) return
+    activeObject.canvas?.add(textCanvas)
+    activeObject.canvas?.setActiveObject(textCanvas)
+    activeObject.canvas?.renderAll()
 
-      prev.add(textCanvas)
-      prev.setActiveObject(textCanvas)
-      prev.renderAll()
-
-      return prev
-    })
-
-    canvas.renderAll()
-
+    setActiveObject(textCanvas)
     setTabNumber(0)
   }
 
   return (
     <>
+      {/* テキスト編集 小カテゴリの選択 */}
       <div
         className='
           flex
@@ -106,15 +98,16 @@ const TextEdit = ({ canvas, setCanvas }: Props) => {
         </div>
       </div>
 
+      {/* テキスト編集 */}
       {
-        (canvas.getActiveObject().type === 'textbox') && (
+        (activeObject.type === 'textbox') && (
           (tabNumber === 0) ?
           // <Input canvas={ canvas } /> :
-          <Format canvas={ canvas } /> :
+          <Format activeObject={ activeObject as fabric.Text } /> :
           (tabNumber === 1) ?
-          <Color canvas={ canvas } /> :
+          <Color activeObject={ activeObject as fabric.Text } /> :
           (tabNumber === 2) &&
-          <Align canvas={ canvas } />
+          <Fonts activeObject={ activeObject as fabric.Text } />
           // (tabNumber === 3) &&
         )
       }

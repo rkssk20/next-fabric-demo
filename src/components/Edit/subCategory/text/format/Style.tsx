@@ -1,30 +1,20 @@
 import { useState, useEffect } from "react"
 
-type ActiveObjectType ={
-  fontWeight: 'normal' | 'bold'
-  fontStyle: 'normal' | 'italic'
-  underline: boolean
-  linethrough: boolean
-}
-
-const Style = ({ canvas }: { canvas: fabric.Canvas}) => {
+const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [bold, setBold] = useState(false)
   const [italic, setItalic] = useState(false)
   const [underline, setUnderline] = useState(false)
   const [linethrough, setLinethrough] = useState(false)
 
   useEffect(() => {
-    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
     activeObject.fontWeight === 'bold' && setBold(true)
     activeObject.fontStyle === 'italic' && setItalic(true)
     activeObject.underline && setUnderline(true)
     activeObject.linethrough && setLinethrough(true)
-  }, [canvas])
+  }, [activeObject])
 
   // 文字を太くする
   const handleBold = () => {
-    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
-
     if(activeObject.fontWeight === 'normal') {
       activeObject.fontWeight = 'bold'
       setBold(true)
@@ -33,13 +23,11 @@ const Style = ({ canvas }: { canvas: fabric.Canvas}) => {
       setBold(false)
     }
 
-    canvas.renderAll()
+    activeObject.canvas?.renderAll()
   }
 
   // 文字を斜めにする
   const handleItalic = () => {
-    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
-
     if(activeObject.fontStyle === 'normal') {
       activeObject.fontStyle = 'italic'
       setItalic(true)
@@ -48,13 +36,11 @@ const Style = ({ canvas }: { canvas: fabric.Canvas}) => {
       setItalic(false)
     }
 
-    canvas.renderAll()
+    activeObject.canvas?.renderAll()
   }
   
   // 文字に下線をつける
   const handleUnderline = () => {
-    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType    
-  
     if(!activeObject.underline) {
       activeObject.underline = true
       setUnderline(true)
@@ -63,14 +49,12 @@ const Style = ({ canvas }: { canvas: fabric.Canvas}) => {
       setUnderline(false)
     }
   
-    canvas.getActiveObject().set('dirty', true)
-    canvas.renderAll()
+    activeObject.set('dirty', true)
+    activeObject.canvas?.renderAll()
   }
   
   // 文字に打ち消し線をつける
   const handleLinethrough = () => {
-    const activeObject = canvas.getActiveObject() as unknown as ActiveObjectType
-  
     if(!activeObject.linethrough) {
       activeObject.linethrough = true
       setLinethrough(true)
@@ -79,8 +63,8 @@ const Style = ({ canvas }: { canvas: fabric.Canvas}) => {
       setLinethrough(false)
     }
   
-    canvas.getActiveObject().set('dirty', true)
-    canvas.renderAll()
+    activeObject.set('dirty', true)
+    activeObject.canvas?.renderAll()
   }
 
   const styleList = [{

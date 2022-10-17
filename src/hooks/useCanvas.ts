@@ -7,6 +7,7 @@ const useCanvas = (
   setCategory: Dispatch<SetStateAction<number | null>>
 ) => {
   const [canvas, setCanvas] = useState<fabric.Canvas>()
+  const [activeObject, setActiveObject] = useState<fabric.Object>()
   useScreenWidth(canvas)
 
   // キャンバスの作成、画像の追加
@@ -44,12 +45,13 @@ const useCanvas = (
     fabricCanvas.setActiveObject(fabricImage)
 
     const handleSelected = (target: fabric.Object | undefined) => {
+      setActiveObject(target)
+
       if(target instanceof fabric.Image) {
         setCategory(0)
       } else if(target instanceof fabric.Text) {
         setCategory(1)
       }
-      canvas?.renderAll()
     }
 
     fabricCanvas.on('mouse:down', (e) => {
@@ -73,7 +75,7 @@ const useCanvas = (
     }
   }, [image])
 
-  return { canvas, setCanvas }
+  return { activeObject, setActiveObject }
 }
 
 export default useCanvas

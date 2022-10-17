@@ -1,23 +1,38 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { fabric } from "fabric";
-import { Image } from "fabric/fabric-impl";
 
 type StateType = {
-  value: number,
-  index: number
+  index: number,
+  value: number
 } | null
 
+type FiltersType = {
+  brightness: number | undefined
+  contrast: number | undefined
+  saturation: number | undefined
+  blur: number | undefined
+  blocksize: number | undefined
+  sepia: typeof fabric.Image.filters.Sepia | undefined
+}[]
+
 type applyFilterType = {
-  filter: fabric.IBrightnessFilter | boolean
-  value: number
   setState: Dispatch<SetStateAction<StateType>>
+  value: number
+  filter: fabric.IBaseFilter | boolean
 }
 
 type applyFilterValueType = applyFilterType & {
   index: number
 }
 
-const Filter = ({ canvas }: { canvas: fabric.Canvas }) => {
+type handleFilterProps = {
+  state: StateType
+  setState: Dispatch<SetStateAction<StateType>>
+  value: number
+  filter: false | fabric.IBaseFilter
+}
+
+const Filter = ({ activeObject }: { activeObject: fabric.Image }) => {
   const [brightness, setBrightness] = useState<StateType>(null)
   const [contrast, setContrast] = useState<StateType>(null)
   const [saturation, setSaturation] = useState<StateType>(null)
@@ -26,240 +41,140 @@ const Filter = ({ canvas }: { canvas: fabric.Canvas }) => {
   const [sepia, setSepia] = useState<StateType>(null)
 
   useEffect(() => {
-    // @ts-ignore
-    const filters = canvas.getActiveObject().filters as fabric.Image.filters.Brightness[]
+    const filters = activeObject.filters as unknown as FiltersType
 
-    if(filters.length > 0) {
-      filters.map((item, index) => {
-        (item instanceof fabric.Image.filters.Brightness) ? setBrightness({ value: filters[index].brightness, index }) :
-        (item instanceof fabric.Image.filters.Contrast) ? setContrast({ value: filters[index].contrast, index }) :
-        (item instanceof fabric.Image.filters.Saturation) ? setSaturation({ value: filters[index].saturation, index }) :
-        // @ts-ignore
-        (item instanceof fabric.Image.filters.Blur) ? setBlur({ value: filters[index].blur, index }) :
-        (item instanceof fabric.Image.filters.Pixelate) ? setPixelate({ value: filters[index].blocksize, index }) :
-        (item instanceof fabric.Image.filters.Sepia) && setSepia({ value: 1, index })
-      })
-    }
+    filters && filters.map((item, index) => {
+      (item.brightness) ? setBrightness({ index, value: item.brightness }) :
+      (item.contrast) ? setContrast({ index, value: item.contrast }) :
+      (item.saturation) ? setSaturation({ index, value: item.saturation }) :
+      (item.blur) ? setBlur({ index, value: item.blur }) :
+      (item.blocksize) ? setPixelate({ index, value: item.blocksize }) :
+      (item.sepia) && setSepia({ index, value: 1 })
+    })
   }, [])
 
   // フィルターの追加
-  const applyFilter = ({ filter, value, setState }: applyFilterType) => {
-    const obj = canvas.getActiveObject() as unknown as Image
-    const filters = obj.filters as (boolean | fabric.IBrightnessFilter)[]
+  const applyFilter = ({ setState, value, filter }: applyFilterType) => {
+    const index = activeObject.filters?.length
+    
+    if(index === undefined) return
 
-    if(!filters) return
+    // フィルターの変更
+    // @ts-ignore
+    activeObject.filters[index] = filter
 
-    const index = filters.length    
+    // フィルターの状態を変更
+    setState({ value, index })
 
-    filters[index] = filter
-
-    setState({
-      value,
-      index
-    })
-
-    obj.applyFilters()
-    canvas.renderAll()
+    // レンダリング
+    activeObject.applyFilters()
+    activeObject.canvas?.renderAll()
   }
   
   // フィルターの値を変更
-  const applyFilterValue = ({ filter, value, setState, index }: applyFilterValueType) => {
-    const obj = canvas.getActiveObject() as unknown as Image
-
-    if(!obj.filters) return
-  
+  const applyFilterValue = ({ setState, value, filter, index }: applyFilterValueType) => {
+    // フィルターの変更
     // @ts-ignore
-    obj.filters[index] = filter
-  
-    obj.applyFilters()
-    canvas.renderAll()
+    activeObject.filters[index] = filter
 
+    // フィルターの状態を変更
     setState(prev => {
       if(!prev) return null
 
-      return {
-        value,
-        index: prev.index
-      }
+      return { value, index: prev.index }
     })
-  }
   
-  // 明るさ
-  const handleBrightness = (number: number) => {
-    const value = number / 20    
-
-    if(brightness === null) {
-      applyFilter({
-        filter: (number !== 0) && new fabric.Image.filters.Brightness({
-          brightness: value
-        }),
-        value,
-        setState: setBrightness
-      })
-    } else {
-      applyFilterValue({
-        filter: (number !== 0) && new fabric.Image.filters.Brightness({
-          brightness: value
-        }),
-        value,
-        setState: setBrightness,
-        index: brightness.index
-      })
-    }
+    // レンダリング
+    activeObject.applyFilters()
+    activeObject.canvas?.renderAll()
   }
 
-  // コントラスト
-  const handleContrast = (number: number) => {
-    const value = number / 20
-
-    if(contrast === null) {
-      applyFilter({
-        filter:(number !== 0) &&  new fabric.Image.filters.Contrast({
-          contrast: value
-        }),
-        value,
-        setState: setContrast
-      })
+  // フィルターの変更
+  const handleFilter = ({ state, setState, value, filter }: handleFilterProps) => {
+    if(state === null) {
+      applyFilter({ filter, value, setState })
     } else {
-      applyFilterValue({
-        filter:(number !== 0) &&  new fabric.Image.filters.Contrast({
-          contrast: value
-        }),
-        value,
-        setState: setContrast,
-        index: contrast.index
-      })
+      applyFilterValue({ filter, value, setState, index: state.index })
     }
-  }
-
-  // 彩度
-  const handleSaturation = (number: number) => {
-    const value = number / 10
-
-    if(saturation === null) {
-      applyFilter({
-        filter: (number !== 0) && new fabric.Image.filters.Saturation({
-          saturation: value
-        }),
-        value,
-        setState: setSaturation
-      })
-    } else {
-      applyFilterValue({
-        filter: (number !== 0) && new fabric.Image.filters.Saturation({
-          saturation: value
-        }),
-        value,
-        setState: setSaturation,
-        index: saturation.index
-      })
-    }
-  }
-
-  // モザイク
-  const handlePixelate = (number: number) => {
-    const value = number * 5
-
-    if(pixelate === null) {
-      applyFilter({
-        filter: (number !== 0) && new fabric.Image.filters.Pixelate({
-          blocksize: value
-        }),
-        value,
-        setState: setPixelate
-      })
-    } else {
-      applyFilterValue({
-        filter: (number !== 0) && new fabric.Image.filters.Pixelate({
-          blocksize: value
-        }),
-        value,
-        setState: setPixelate,
-        index: pixelate.index
-      })
-    }
-  }
-
-  // ぼかし
-  const handleBlur = (number: number) => {
-    const value = number / 10
-
-    if(blur === null) {
-      applyFilter({
-        // @ts-ignore
-        filter: (number !== 0) && new fabric.Image.filters.Blur({
-          blur: value
-        }),
-        value,
-        setState: setBlur
-      })
-    } else {
-      applyFilterValue({
-        // @ts-ignore
-        filter: (number !== 0) && new fabric.Image.filters.Blur({
-          blur: value
-        }),
-        value,
-        setState: setBlur,
-        index: blur.index
-      })
-    }
-  }
-
-  // セピア
-  const handleSepia = (number: number) => {
-    if(sepia === null) {
-      applyFilter({
-        filter: (number !== 0) && new fabric.Image.filters.Sepia(),
-        value: number,
-        setState: setSepia
-      })
-    } else {
-      applyFilterValue({
-        filter: (number !== 0) && new fabric.Image.filters.Sepia(),
-        value: number,
-        setState: setSepia,
-        index: sepia.index
-      })
-    }
-  }
+  }  
 
   const filter_list = [{
     name: '明るさ',
-    handle: handleBrightness,
-    value: (brightness === null) ? 0 : brightness.value * 20,
-    min: -10,
-    max: 10
+    value: (brightness === null) ? 0 : Math.round(brightness.value * 200),
+    min: -100,
+    max: 100,
+    handle: (number: number) => handleFilter({
+      state: brightness,
+      setState: setBrightness,
+      value: number / 200,
+      filter: (number !== 0) && new fabric.Image.filters.Brightness({
+        brightness: number / 200
+      })
+    })
   }, {
     name: 'コントラスト',
-    handle: handleContrast,
-    value: (contrast === null) ? 0 : contrast.value * 20,
-    min: -10,
-    max: 10
+    min: -100,
+    max: 100,
+    value: (contrast === null) ? 0 : Math.round(contrast.value * 200),
+    handle: (number: number) => handleFilter({
+      state: contrast,
+      setState: setContrast,
+      value: number / 200,
+      filter: (number !== 0) && new fabric.Image.filters.Contrast({
+        contrast: number / 200
+      })
+    })
   }, {
     name: '彩度',
-    handle: handleSaturation,
-    value: (saturation === null) ? 0 : saturation.value * 10,
-    min: -10,
-    max: 10
+    min: -100,
+    max: 100,
+    value: (saturation === null) ? 0 : Math.round(saturation.value * 100),
+    handle: (number: number) => handleFilter({
+      state: saturation,
+      setState: setSaturation,
+      value: number / 100,
+      filter: (number !== 0) && new fabric.Image.filters.Saturation({
+        saturation: number / 100
+      })
+    })
   }, {
     name: 'モザイク',
-    handle: handlePixelate,
-    value: (pixelate === null) ? 0 : pixelate.value / 5,
     min: 0,
-    max: 10
+    max: 100,
+    value: (pixelate === null) ? 0 : (pixelate.value * 2),
+    handle: (number: number) => handleFilter({
+      state: pixelate,
+      setState: setPixelate,
+      value: number / 2,
+      filter: (number !== 0) && new fabric.Image.filters.Pixelate({
+        blocksize: number / 2
+      })
+    })
   }, {
     name: 'ぼかし',
-    handle: handleBlur,
-    value: (blur === null) ? 0 : blur.value * 10,
     min: 0,
-    max: 10
+    max: 100,
+    value: (blur === null) ? 0 : Math.round(blur.value * 100),
+    handle: (number: number) => handleFilter({
+      state: blur,
+      setState: setBlur,
+      value: number /100,
+      // @ts-ignore
+      filter: (number !== 0) && new fabric.Image.filters.Blur({
+        blur: number /100
+      })
+    })
   }, {
     name: 'セピア',
-    handle: handleSepia,
-    value:  (sepia === null) ? 0 : sepia.value,
     min: 0,
-    max: 1
+    max: 1,
+    value:  (sepia === null) ? 0 : (sepia.value),
+    handle: (number: number) => handleFilter({
+      state: sepia,
+      setState: setSepia,
+      value: number,
+      filter: (number !== 0) && new fabric.Image.filters.Sepia()
+    })
   }]
 
   return (
