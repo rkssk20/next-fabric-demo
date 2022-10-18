@@ -1,5 +1,6 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { fabric } from "fabric";
+import Range from '@/atoms/Range'
 
 type StateType = {
   index: number,
@@ -181,31 +182,14 @@ const Filter = ({ activeObject }: { activeObject: fabric.Image }) => {
     <div className="px-6 overflow-y-scroll">
       {
         filter_list.map(item => (
-          <div key={ item.name } className="mt-6">
-            <p>{ item.name }</p>
-
-            <div
-              className="
-                w-full
-                mt-2
-                flex
-                justify-between
-              "
-            >
-              <input
-                className="w-[calc(100%-50px)]"
-                type='range'
-                min={ item.min }
-                max={ item.max }
-                value={ item.value }
-                onChange={ e => item.handle(Number(e.target.value)) }
-              />
-
-              <span className="ml-2 select-none">
-                { item.value }
-              </span>
-            </div>
-          </div>
+          <Range
+            key={ item.name }
+            name={ item.name }
+            min={ item.min }
+            max={ item.max }
+            value={ item.value }
+            handle={ item.handle }
+          />
         ))
       }
     </div>

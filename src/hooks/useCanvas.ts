@@ -23,7 +23,8 @@ const useCanvas = (
     const fabricCanvas = new fabric.Canvas('canvas', {
       width,
       height,
-      preserveObjectStacking: true
+      preserveObjectStacking: true,
+      hoverCursor: 'pointer'
     })
 
     fabric.Object.prototype.set({
@@ -43,6 +44,7 @@ const useCanvas = (
 
     fabricCanvas.add(fabricImage)
     fabricCanvas.setActiveObject(fabricImage)
+    setActiveObject(fabricImage)
 
     const handleSelected = (target: fabric.Object | undefined) => {
       setActiveObject(target)

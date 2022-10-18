@@ -29,9 +29,10 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
       originY: 'center',
       top: (height && zoom)? ((height / zoom) / 2) : 0,
       left: (width && zoom) ? ((width / zoom) / 2) : 0,
+      textAlign: 'center',
       fontFamily: 'Noto Sans JP',
       fontSize: 30,
-      fill: 'white'
+      fill: 'black'
     })
 
     activeObject.canvas?.add(textCanvas)
@@ -89,7 +90,7 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
                 key={ item.name }
                 name={ item.name }
                 icon={ item.icon }
-                disabled={ false }
+                disabled={ !(activeObject instanceof fabric.Text) }
                 handle={ () => setTabNumber(index) }
                 select={ (tabNumber === index) }
               />
@@ -100,7 +101,7 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
 
       {/* テキスト編集 */}
       {
-        (activeObject.type === 'textbox') && (
+        (activeObject instanceof fabric.Text) && (
           (tabNumber === 0) ?
           // <Input canvas={ canvas } /> :
           <Format activeObject={ activeObject as fabric.Text } /> :

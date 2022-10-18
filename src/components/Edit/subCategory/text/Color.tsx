@@ -5,11 +5,19 @@ import { HexColorPicker, HexColorInput } from "react-colorful";
 const Color = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [value, setValue] = useState('')
 
-  useEffect(() => {
-    setValue('')
-  }, [])
+  useEffect(() => {    
+    if(typeof activeObject.fill === 'string') {
+      if(activeObject.fill === 'black') {
+        setValue('#000000')
+      } else {
+        setValue(activeObject.fill)
+      }
+    }
+  }, [activeObject])
 
   const handleColor = (e: string) => {
+    activeObject.set('fill', e)
+    activeObject.canvas?.renderAll()
     setValue(e)
   }
 
@@ -43,7 +51,7 @@ const Color = ({ activeObject }: { activeObject: fabric.Text }) => {
           line-break: anywhere
         "
       >
-        <p className="px-1 text-gray-500">#</p>
+        <p className="px-1 text-gray-500 cursor-default">#</p>
         
         <HexColorInput
           className='

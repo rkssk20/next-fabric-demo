@@ -5,7 +5,7 @@ import useImage from "@/hooks/useImage";
 import Header from '@/atoms/Header'
 import CategoryButton from "@/atoms/CategoryButton";
 import TextEdit from '@/components/Edit/subCategory/TextEdit'
-import DrawEdit from '@/components/Edit/subCategory/DrawEdit'
+import Frame from '@/components/Edit/category/Frame'
 import Filter from '@/components/Edit/category/Filter'
 
 const Edit = ({ cropImage }: { cropImage: string }) => {
@@ -21,8 +21,8 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
     name: 'テキスト',
     icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe264;</span>
   }, {
-    name: '手書き',
-    icon:  <span className="pb-2 text-2xl material-symbols-rounded">&#xe3ae;</span>
+    name: 'フレーム',
+    icon:  <span className="pb-2 text-2xl material-symbols-rounded">&#xf0d9;</span>
   }]
 
   const handleNext = () => {
@@ -149,7 +149,7 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
             <Filter activeObject={ activeObject as fabric.Image } /> :
             (category === 1) ?
             <TextEdit activeObject={ activeObject } setActiveObject={ setActiveObject } /> :
-            <DrawEdit activeObject={ activeObject } />
+            <Frame />
           )
         }
       </div>

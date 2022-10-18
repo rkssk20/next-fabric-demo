@@ -69,6 +69,7 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
 
   const styleList = [{
     value: 'bold',
+    name: '太字',
     handle: handleBold,
     selected: bold,
     icon:
@@ -77,6 +78,7 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
     </div>
   }, {
     value: 'italic',
+    name: '斜体',
     handle: handleItalic,
     selected: italic,
     icon: <div className="text-2xl material-symbols-rounded">
@@ -84,6 +86,7 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
   </div>
   }, {
     value: 'underline',
+    name: '下線',
     handle: handleUnderline,
     selected: underline,
     icon: <div className="text-2xl material-symbols-rounded">
@@ -91,6 +94,7 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
   </div>
   }, {
     value: 'linethrough',
+    name: '取消線',
     handle: handleLinethrough,
     selected: linethrough,
     icon: <div className="text-2xl material-symbols-rounded">
@@ -118,9 +122,13 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
               key={ item.value }
               className={
                 `
-                  min-w-[70px]
-                  min-h-[70px]
+                min-w-[70px]
+                min-h-[70px]
                   p-2
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
                   text-xs
                   rounded-2xl
                   duration-200
@@ -135,6 +143,7 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
               onClick={ item.handle }
             >
               { item.icon }
+              { item.name }
             </button>
           ))
         }

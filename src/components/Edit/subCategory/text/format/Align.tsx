@@ -14,6 +14,26 @@ const Align = ({ activeObject }: { activeObject: fabric.Text }) => {
     setAlign(item)
   }
 
+  const align_list = [{
+    value: 'left',
+    name: '左',
+    icon: <div className="pb-2 text-2xl material-symbols-rounded">
+      &#xe236;
+    </div>
+  }, {
+    value: 'center',
+    name: '中央',
+    icon: <div className="pb-2 text-2xl material-symbols-rounded">
+      &#xe234;
+    </div>
+  }, {
+    value: 'right',
+    name: '右',
+    icon: <div className="pb-2 text-2xl material-symbols-rounded">
+      &#xe237;
+    </div>
+  }]
+
   return (
     <div className="mt-6">
       <p>整列</p>
@@ -29,9 +49,9 @@ const Align = ({ activeObject }: { activeObject: fabric.Text }) => {
         "
       >
         {
-          ['left', 'center', 'right'].map(item => (
+          align_list.map(item => (
             <button
-              key={ item }
+              key={ item.value }
               className={
                 `
                   min-w-[90px]
@@ -48,36 +68,13 @@ const Align = ({ activeObject }: { activeObject: fabric.Text }) => {
                   border-solid
                   hover:bg-[#efefef]
                   active:bg-[#e5e5e5]
-                  ${
-                    (item === align) && 'bg-[#e5e5e5]'
-                  }
-                  `
+                  ${ (item.value === align) && 'bg-[#e5e5e5]' }
+                `
               }
-              onClick={ () => handleAlign(item) }
+              onClick={ () => handleAlign(item.value) }
             >
-              {
-                (item === 'left') ? 
-                  <>
-                    <div className="pb-2 text-2xl material-symbols-rounded">
-                      &#xe236;
-                    </div>
-                    左
-                  </>
-                : (item === 'center') ?
-                  <>
-                    <div className="pb-2 text-2xl material-symbols-rounded">
-                      &#xe234;
-                    </div>
-                    中央
-                  </>
-                :
-                  <>
-                    <div className="pb-2 text-2xl material-symbols-rounded">
-                      &#xe237;
-                    </div>
-                    右
-                  </>
-              }
+              { item.icon }
+              { item.name }
             </button>
           ))
         }

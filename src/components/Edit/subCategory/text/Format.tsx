@@ -3,24 +3,18 @@ import { fabric } from "fabric"
 import Style from '@/components/Edit/subCategory/text/format/Style'
 import Align from '@/components/Edit/subCategory/text/format/Align'
 import FontSize from '@/components/Edit/subCategory/text/format/FontSize'
+import Rotation from '@/components/Edit/subCategory/text/format/Rotation'
 
 const Format = ({ activeObject }: { activeObject: fabric.Text }) => {
-  const [fontSize, setFontSize] = useState<number | null>(null)
-
    return (
     <div className="px-6 overflow-y-scroll">
+      <FontSize activeObject={ activeObject } />
+
+      <Rotation activeObject={ activeObject } />
+
       <Style activeObject={ activeObject } />
 
       <Align activeObject={ activeObject } />
-
-      {
-        fontSize &&
-        <FontSize
-          fontSize={ fontSize }
-          setFontSize={ setFontSize }
-          activeObject={ activeObject }
-        />
-      }
     </div>
   )
 }

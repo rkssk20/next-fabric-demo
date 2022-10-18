@@ -62,8 +62,8 @@ const Fonts = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [list, setList] = useState(fonts.slice(0, 10))
 
   useEffect(() => {
-    setValue('')
-  }, [])
+    activeObject.fontFamily && setValue(activeObject.fontFamily)
+  }, [activeObject])
 
   // フォントの無限スクロール
   const handleMore = () => { 
@@ -88,6 +88,7 @@ const Fonts = ({ activeObject }: { activeObject: fabric.Text }) => {
             key={ item }
             setTargetRef={ ((list.length -2) === index) ? setTargetRef : undefined }
             fontFamily={ item }
+            disabled={ item === value }
             handleFont={ handleFont }
           />
         ))

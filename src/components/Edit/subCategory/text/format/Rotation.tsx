@@ -2,30 +2,31 @@ import { useState, useEffect, ChangeEvent, Dispatch, SetStateAction } from "reac
 import { fabric } from 'fabric'
 import Range from '@/atoms/Range'
 
-const FontSize = ({ activeObject }: { activeObject: fabric.Text }) => {
+const Rotation = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [value, setValue] = useState(0)
+console.log(activeObject);
 
   useEffect(() => {
-    (activeObject.fontSize !== undefined) && setValue(activeObject.fontSize)
+    (activeObject.angle !== undefined) && setValue(activeObject.angle)
   }, [activeObject])
 
-  const handleFontSize = (number: number) => {
+  const handleRotation = (number: number) => {
     setValue(number)
-    activeObject.fontSize = number
+    activeObject.angle = number
     activeObject.canvas?.renderAll()
   }
 
   return (
     <div className="mt-6">
       <Range
-        name='フォントサイズ'
-        min={ 10 }
-        max={ 100 }
+        name='角度'
+        min={ -180 }
+        max={ 180 }
         value={ value }
-        handle={ handleFontSize }
+        handle={ handleRotation }
       />
     </div>
   )
 }
 
-export default FontSize
+export default Rotation
