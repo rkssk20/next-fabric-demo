@@ -22,49 +22,47 @@ const Color = ({ activeObject }: { activeObject: fabric.Text }) => {
   }
 
   return (
-    <div
-      className="
-        mt-4
-        px-6
-        flex
-        items-center
-        justify-center
-        flex-1
-        overflow-y-scroll
-      "
-    >
-      <HexColorPicker
-        className="mt-4 pb-6"
-        color={ value }
-        onChange={ handleColor }
-      />
+    <div className="mt-6">
+      <p>カラー</p>
 
       <div
         className="
-          ml-4
-          pl-1
-          bg-gray-200
+          mt-2
+          pl-4
           flex
           items-center
-          rounded-xl
-          resize-none
-          line-break: anywhere
+          justify-center
         "
       >
-        <p className="px-1 text-gray-500 cursor-default">#</p>
-        
-        <HexColorInput
-          className='
-            max-w-[80px]
-            p-2
+        <HexColorPicker color={ value } onChange={ handleColor } />
+
+        <div
+          className="
+            ml-2
+            pl-1
             bg-gray-200
+            flex
+            items-center
             rounded-xl
-          '
-          color={ value }
-          onChange={ handleColor }
-        />
+            resize-none
+            line-break: anywhere
+          "
+        >
+          <p className="px-1 text-gray-500 cursor-default">#</p>
+          
+          <HexColorInput
+            className='
+              max-w-[80px]
+              p-2
+              bg-gray-200
+              rounded-xl
+            '
+            color={ value }
+            onChange={ handleColor }
+          />
+        </div>
       </div>
-    </div>
+    </div> 
   )
 }
 

@@ -1,10 +1,9 @@
-import { useState, useEffect, ChangeEvent, Dispatch, SetStateAction } from "react"
+import { useState, useEffect } from "react"
 import { fabric } from 'fabric'
 import Range from '@/atoms/Range'
 
-const Rotation = ({ activeObject }: { activeObject: fabric.Text }) => {
+const Angle = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [value, setValue] = useState(0)
-console.log(activeObject);
 
   useEffect(() => {
     (activeObject.angle !== undefined) && setValue(activeObject.angle)
@@ -29,4 +28,4 @@ console.log(activeObject);
   )
 }
 
-export default Rotation
+export default Angle

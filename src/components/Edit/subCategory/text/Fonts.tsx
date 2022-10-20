@@ -81,7 +81,7 @@ const Fonts = ({ activeObject }: { activeObject: fabric.Text }) => {
   }
 
   return (
-    <div className="mx-2 flex-1 overflow-y-scroll">
+    <div className="py-6 px-4 overflow-y-scroll">
       {
         list.map((item, index) => (
           <Font

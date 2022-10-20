@@ -44,17 +44,22 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
     <div
       className="
         w-full
-        md:w-[528px]
         lg:w-[calc(100%-32px)]
         max-w-5xl
-        h-[calc(100vh-85px)]
-        mt-[69px]
-        mx-auto
-        p-4
+        h-[calc(100vh-54px)]
+        lg:h-[calc(100vh-85px)]
+        mt-[54px]
+        lg:mt-[69px]
+        lg:mx-auto
+        px-4
+        py-2
+        md:px-[calc((100%-496px)/2)]
+        lg:px-4
+        lg:py-4
         lg:flex
         lg:justify-between
         bg-white
-        rounded-2xl
+        lg:rounded-2xl
         overflow-hidden
       "
     >
@@ -88,7 +93,6 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
         id='stage-parent'
         className="
           w-full
-          md:w-[496px]
           lg:w-[calc((100%-16px)-376px)]
           xl:w-[600px]
           aspect-video
@@ -112,7 +116,9 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
           rounded-2xl
         "
         style={{
-          height: (window.innerWidth < 768) ? `calc(100% - ${ document.querySelector('#stage-parent')?.clientHeight }px)` : '100%'
+          height: (window.innerWidth < 768) ?
+            `calc(100% - ${ document.querySelector('#stage-parent')?.clientHeight }px - 8px)` :
+            '100%'
         }}
       >
         {/* 大カテゴリの選択 */}

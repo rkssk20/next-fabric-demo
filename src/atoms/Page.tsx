@@ -4,13 +4,18 @@ const Page = ({ children }: { children: ReactNode }) => {
   return (
     <div
       className='
-        max-w-[640px]
-        h-[calc(100vh-85px)]
-        mt-[69px]
-        mx-auto
+        w-full
+        lg:max-w-[640px]
+        h-[calc(100vh-54px)]
+        lg:h-[calc(100vh-86px)]
+        mt-[54px]
+        lg:mt-[69px]
+        lg:mx-auto
         p-4
+        md:px-[calc((100%-496px)/2)]
+        lg:p-4
         bg-white
-        rounded-2xl
+        lg:rounded-2xl
       '
     >
       { children }

@@ -2,21 +2,21 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { fabric } from 'fabric'
 import SubCategoryButton from '@/atoms/SubCategoryButton'
 import Format from '@/components/Edit/subCategory/text/Format'
-import Color from '@/components/Edit/subCategory/text/Color'
+import Color from '@/components/Edit/subCategory/text/format/Color'
 import Fonts from '@/components/Edit/subCategory/text/Fonts'
 
 const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Object, setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>> }) => {
-  const [tabNumber, setTabNumber] = useState<number>(0)  
+  const [tabNumber, setTabNumber] = useState<number>(0)
   
   const subcategory_list = [{
     name: 'フォーマット',
     icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe23c;</span>
   }, {
-    name: 'カラー',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe40a;</span>
-  }, {
     name: 'フォント',
     icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe167;</span>
+  }, {
+    name: 'エフェクト',
+    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe65f;</span>
   }]
 
   const handleAdd = () => {
@@ -29,10 +29,13 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
       originY: 'center',
       top: (height && zoom)? ((height / zoom) / 2) : 0,
       left: (width && zoom) ? ((width / zoom) / 2) : 0,
-      textAlign: 'center',
+      hasControls: false,
+      hoverCursor: 'pointer',
+      moveCursor: 'pointer',
       fontFamily: 'Noto Sans JP',
       fontSize: 30,
-      fill: 'black'
+      fill: 'black',
+      textAlign: 'center'
     })
 
     activeObject.canvas?.add(textCanvas)
@@ -41,6 +44,11 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
 
     setActiveObject(textCanvas)
     setTabNumber(0)
+  }
+
+  const handleDelete = () => {
+    setActiveObject(prev => prev?.canvas?.getObjects()[0])
+    activeObject.canvas?.remove(activeObject)
   }
 
   return (
@@ -75,6 +83,32 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
           追加
         </button>
 
+        <button
+          className={ `
+            min-w-[90px]
+            p-2
+            flex
+            flex-col
+            items-center
+            justify-center
+            text-xs
+            duration-200
+            border-b-4
+            border-transparent
+            hover:bg-[#efefef]
+            active:bg-[#e5e5e5]
+            ${
+                !(activeObject instanceof fabric.Text) &&
+                `text-gray-400 border-transparent`
+              }
+          ` }
+          disabled={ !(activeObject instanceof fabric.Text) }
+          onClick={ handleDelete }
+        >
+          <span className="pb-2 text-2xl material-symbols-rounded">&#xe872;</span>
+          削除
+        </button>
+
         <div className='border-r border-gray-300' />
 
         <div
@@ -106,9 +140,9 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
           // <Input canvas={ canvas } /> :
           <Format activeObject={ activeObject as fabric.Text } /> :
           (tabNumber === 1) ?
-          <Color activeObject={ activeObject as fabric.Text } /> :
+          <Fonts activeObject={ activeObject as fabric.Text } /> :
           (tabNumber === 2) &&
-          <Fonts activeObject={ activeObject as fabric.Text } />
+          <Color activeObject={ activeObject as fabric.Text } />
           // (tabNumber === 3) &&
         )
       }

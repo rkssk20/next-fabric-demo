@@ -179,7 +179,7 @@ const Filter = ({ activeObject }: { activeObject: fabric.Image }) => {
   }]
 
   return (
-    <div className="px-6 overflow-y-scroll">
+    <div className="pb-6 px-4 overflow-y-scroll">
       {
         filter_list.map(item => (
           <Range
