@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { fabric } from 'fabric'
 import SubCategoryButton from '@/atoms/SubCategoryButton'
-import Format from '@/components/Edit/subCategory/text/Format'
-import Color from '@/components/Edit/subCategory/text/format/Color'
+import Format from '@/components/Edit/subCategory/text/format'
 import Fonts from '@/components/Edit/subCategory/text/Fonts'
+import Effect from '@/components/Edit/subCategory/text/effect'
 
-const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Object, setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>> }) => {
+const Text = ({ activeObject, setActiveObject }: { activeObject: fabric.Object, setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>> }) => {
   const [tabNumber, setTabNumber] = useState<number>(0)
   
   const subcategory_list = [{
@@ -142,7 +142,7 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
           (tabNumber === 1) ?
           <Fonts activeObject={ activeObject as fabric.Text } /> :
           (tabNumber === 2) &&
-          <Color activeObject={ activeObject as fabric.Text } />
+          <Effect activeObject={ activeObject as fabric.Text } />
           // (tabNumber === 3) &&
         )
       }
@@ -150,4 +150,4 @@ const TextEdit = ({ activeObject, setActiveObject }: { activeObject: fabric.Obje
   )
 }
 
-export default TextEdit
+export default Text

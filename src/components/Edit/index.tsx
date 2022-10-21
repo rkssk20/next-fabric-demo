@@ -4,9 +4,9 @@ import useCanvas from "@/hooks/useCanvas";
 import useImage from "@/hooks/useImage";
 import Header from '@/atoms/Header'
 import CategoryButton from "@/atoms/CategoryButton";
-import TextEdit from '@/components/Edit/subCategory/TextEdit'
-import Frame from '@/components/Edit/category/Frame'
 import Filter from '@/components/Edit/category/Filter'
+import Text from '@/components/Edit/category/Text'
+import Frame from '@/components/Edit/category/Frame'
 
 const Edit = ({ cropImage }: { cropImage: string }) => {
   const [category, setCategory] = useState<number | null>(null)
@@ -154,7 +154,7 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
             (category === 0) ?
             <Filter activeObject={ activeObject as fabric.Image } /> :
             (category === 1) ?
-            <TextEdit activeObject={ activeObject } setActiveObject={ setActiveObject } /> :
+            <Text activeObject={ activeObject } setActiveObject={ setActiveObject } /> :
             <Frame />
           )
         }
