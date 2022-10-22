@@ -1,13 +1,13 @@
 import { fabric } from "fabric"
-import Shadow from "@/components/Edit/subCategory/text/effect/Shadow"
-import Border from "@/components/Edit/subCategory/text/effect/Border"
-import Background from "@/components/Edit/subCategory/text/effect/Background"
+import Shadow from "@/components/Edit/subCategory/text/effect/shadow"
+import Stroke from "@/components/Edit/subCategory/text/effect/stroke"
+import Background from "@/components/Edit/subCategory/text/effect/background"
 
 const Effect = ({ activeObject }: { activeObject: fabric.Text }) => {
   return (
     <div className="pb-6 px-4 overflow-y-scroll">
       <Shadow activeObject={ activeObject } />
-      <Border activeObject={ activeObject } />
+      <Stroke activeObject={ activeObject } />
       <Background activeObject={ activeObject } />
     </div>
   )

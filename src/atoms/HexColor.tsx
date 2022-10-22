@@ -1,59 +1,115 @@
-import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, useRef, Dispatch, SetStateAction, MutableRefObject } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
-type PopupProps = HexColorProps & { setOpen: Dispatch<SetStateAction<boolean>> }
+type ColorPickerProps = HexColorProps & {
+  setOpen: Dispatch<SetStateAction<boolean>>
+  position: PositionState
+  setPosition: Dispatch<SetStateAction<PositionState | null>>
+}
 
-// カラー選択のポップアップ部分
-const Popup = ({ value, handle, setOpen }: PopupProps) => {
-  const [position, setPosition] = useState('top-0')
+// ポップアップのメイン要素
+const ColorPicker = ({ value, handle, setOpen, position, setPosition }: ColorPickerProps) => {
   const ref = useRef<HTMLDivElement | null>(null)
-
-  // top-0で要素が完全に表示されていない場合、bottom-0にする
+  
   useEffect(() => {
+    // 外側のクリックを検知してポップアップを閉じる
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+
+    // 要素が画面外の時、画面内に配置する
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) { setPosition('bottom-0') }
+      if (!entry.isIntersecting) {
+        setPosition(prev => {
+          if(!prev) return null
+
+          return {
+            left: prev.left,
+            bottom: '0px'
+          }
+        })
+      }
     }, { threshold: 1 })
 
     if(ref.current === null) return
     const current = ref.current
-
     observer.observe(current);
 
-    return () => { observer.unobserve(current) }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+      observer.unobserve(current)
+    }
+
   }, [])
 
   return (
     <div
-      className={ `
+      className="
         absolute
-        ${ position }
-        bottom-auto
-        left-0
         bg-white
         border
         border-ogp-border
         border-solid
         rounded-2xl
         shadow-[0_0_5px_1px_rgba(0,0,0,0.3)]
-      ` }
+        z-10
+      "
+      style={ position }
       ref={ ref }
     >
-      <div
-        className="
-          fixed
-          top-0
-          bottom-0
-          left-0
-          right-0
-        "
-        onClick={ () => setOpen(false) }
-      />
-
       <HexColorPicker
         className="m-4"
         color={ value }
         onChange={ handle }
       />
+    </div>
+  )
+}
+
+type PopupProps = HexColorProps & {
+  setOpen: Dispatch<SetStateAction<boolean>>
+  buttonRef: MutableRefObject<HTMLButtonElement | null>
+}
+
+type PositionState = {
+  top?: string
+  bottom?: string
+  left: string
+}
+
+// カラー選択のポップアップ部分
+const Popup = ({ value, handle, setOpen, buttonRef }: PopupProps) => {
+  const [position, setPosition] = useState<PositionState | null>(null)
+
+  useEffect(() => {
+    const rect = buttonRef.current?.getBoundingClientRect()
+  
+    if(!rect) return
+  
+    setPosition({
+      top: rect.top + 'px',
+      left: rect.left + 'px'
+    })
+  }, [])
+
+  return (
+    <div className="absolute inset-0">
+      {
+        position &&
+        <ColorPicker
+          value={ value }
+          handle={ handle }
+          setOpen={ setOpen }
+          position={ position }
+          setPosition={ setPosition}
+        />
+      }
     </div>
   )
 }
@@ -65,13 +121,13 @@ type HexColorProps = {
 
 // カラー全体
 const HexColor = ({ value, handle }: HexColorProps) => {
-  const [open, setOpen] = useState(false)   
+  const [open, setOpen] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
 
   return (
     <div
       className="
         mt-2
-        relative
         flex
         items-center
         justify-center
@@ -86,7 +142,8 @@ const HexColor = ({ value, handle }: HexColorProps) => {
           border-solid
           rounded-2xl
         "
-        style={{ backgroundColor: `${ value }` }}
+        style={{ backgroundColor: value }}
+        ref={ buttonRef }
         onClick={ () => setOpen(true) }
       >
         <div
@@ -145,6 +202,7 @@ const HexColor = ({ value, handle }: HexColorProps) => {
           value={ value }
           handle={ handle }
           setOpen={ setOpen }
+          buttonRef={ buttonRef }
         />
       }
     </div>

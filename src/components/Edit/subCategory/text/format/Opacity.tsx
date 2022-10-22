@@ -6,11 +6,8 @@ const Opacity = ({ activeObject }: { activeObject: fabric.Text }) => {
   const [value, setValue] = useState(0)
 
   useEffect(() => {
-    (activeObject.opacity !== undefined) && setValue(activeObject.opacity * 100)
-  }, [activeObject])
-
-  console.log(activeObject.opacity);
-  
+    (activeObject.opacity !== undefined) && setValue(Math.round(activeObject.opacity * 100))
+  }, [activeObject])  
 
   const handleOpacity = (number: number) => {
     setValue(number)
