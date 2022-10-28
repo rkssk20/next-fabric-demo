@@ -14,6 +14,9 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
   const image = useImage(cropImage)
   const { activeObject, setActiveObject } = useCanvas(image, setCategory)
 
+  console.log(activeObject);
+  
+
   const category_list = [{
     name: 'フィルター',
     icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe43b;</span>
@@ -35,21 +38,7 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
   }
 
   const handleCategory = (e: MouseEvent<HTMLButtonElement>, index: number) => {
-    if(index === 0) setActiveObject(prev => prev?.canvas?.getObjects()[0])
-
-    if(index === 2) {
-      setActiveObject(prev => {
-        let obj = prev?.canvas?.getObjects()[0]
-
-        prev?.canvas?.getObjects().map(item => {
-          if(item.name) {
-            obj = item
-          }
-        })
-
-        return obj
-      })
-    }
+    if((index === 0) || (index === 2)) setActiveObject(prev => prev?.canvas?.getObjects()[0])
 
     setCategory(index)
   }

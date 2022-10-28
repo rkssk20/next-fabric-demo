@@ -1,35 +1,35 @@
 import { fabric } from 'fabric'
-import type { ActiveProps } from '@/types/type'
+import type { FrameTemplateProps } from '@/types/type'
 import FrameTemplate from '@/atoms/FrameTemplate'
 
-const Beauty = ({ activeObject, setActiveObject }: ActiveProps) => {  
+const Beauty = ({ setActiveObject, frame, setFrame }: FrameTemplateProps) => {
   const handleTemplate = () => {
-    if(activeObject.name === 'beauty') {
-      setActiveObject(activeObject.canvas?.getObjects()[0])
-      activeObject.canvas?.remove(activeObject)
+    if(frame?.name === 'beauty') {
+      setActiveObject(prev => {
+        prev?.canvas?.remove(frame)
+        return prev
+      })
+      setFrame(null)
       return
     }
 
-    const width = activeObject.canvas?.width
-    const height = activeObject.canvas?.height
-
-    if(!width || !height) return
-
     fabric.Image.fromURL('../../../../../frame/beauty.png', (img) => {
-      img.width && img.scale(width / img.width)
-      img.name = 'beauty'
-      img.evented = false
+      setActiveObject(prev => {
+        prev?.canvas?.width && img.width && img.scale(prev.canvas.width / img.width)
+        img.name = 'beauty'
+        img.evented = false
 
-      if(activeObject.name) {
-        setActiveObject(prev => {
-          prev?.canvas?.remove(prev)
-          return prev
-        })
-      }
+        if(frame?.name) {
+          prev?.canvas?.remove(frame)
+        }
 
-      activeObject.canvas?.add(img)
-      activeObject.canvas?.renderAll()
-      setActiveObject(img)
+        prev?.canvas?.add(img)
+        prev?.canvas?.renderAll()
+        
+        return prev
+      })
+
+      setFrame(img)
     })
   }
 
@@ -37,7 +37,7 @@ const Beauty = ({ activeObject, setActiveObject }: ActiveProps) => {
     <FrameTemplate
       name='キレイ'
       image='/frame/beauty.png'
-      selected={ activeObject.name === 'beauty' }
+      selected={ frame?.name === 'beauty' }
       handle={ handleTemplate }
     />
   )

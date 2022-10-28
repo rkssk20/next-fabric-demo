@@ -1,36 +1,37 @@
+import { useState, useEffect } from 'react'
 import { fabric } from 'fabric'
-import type { ActiveProps } from '@/types/type'
+import type { FrameTemplateProps } from '@/types/type'
 import FrameTemplate from '@/atoms/FrameTemplate'
 
-const Kawaii = ({ activeObject, setActiveObject }: ActiveProps) => {  
+const Kawaii = ({ setActiveObject, frame, setFrame }: FrameTemplateProps) => {  
   const handleTemplate = () => {
-    if(activeObject.name === 'kawaii') {
-      setActiveObject(activeObject.canvas?.getObjects()[0])
-      activeObject.canvas?.remove(activeObject)
+    if(frame?.name === 'kawaii') {
+      setActiveObject(prev => {
+        prev?.canvas?.remove(frame)
+        return prev
+      })
+      setFrame(null)
       return
     }
 
-    const width = activeObject.canvas?.width
-    const height = activeObject.canvas?.height
-
-    if(!width || !height) return
-
     fabric.Image.fromURL('../../../../../frame/kawaii.png', (img) => {
-      img.width && img.scale(width / img.width)
-      img.name = 'kawaii'
-      img.evented = false
+      
+      setActiveObject(prev => {
+        prev?.canvas?.width && img.width && img.scale(prev.canvas.width / img.width)
+        img.name = 'kawaii'
+        img.evented = false
 
+        if(frame?.name) {
+          prev?.canvas?.remove(frame)
+        }
 
-      if(activeObject.name) {
-        setActiveObject(prev => {
-          prev?.canvas?.remove(prev)
-          return prev
-        })
-      }
+        prev?.canvas?.add(img)
+        prev?.canvas?.renderAll()
+        
+        return prev
+      })
 
-      activeObject.canvas?.add(img)
-      activeObject.canvas?.renderAll()
-      setActiveObject(img)
+      setFrame(img)
     })
   }
 
@@ -38,7 +39,7 @@ const Kawaii = ({ activeObject, setActiveObject }: ActiveProps) => {
     <FrameTemplate
       name='かわいい'
       image='/frame/kawaii.png'
-      selected={ activeObject.name === 'kawaii' }
+      selected={ frame?.name === 'kawaii' }
       handle={ handleTemplate }
     />
   )

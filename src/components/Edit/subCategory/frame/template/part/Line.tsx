@@ -1,36 +1,36 @@
 import { fabric } from 'fabric'
-import type { ActiveProps } from '@/types/type'
+import type { FrameTemplateProps } from '@/types/type'
 import FrameTemplate from '@/atoms/FrameTemplate'
 
-const Line = ({ activeObject, setActiveObject }: ActiveProps) => {  
+const Line = ({ setActiveObject, frame, setFrame }: FrameTemplateProps) => {  
   const handleTemplate = () => {
-    if(activeObject.name === 'line') {
-      setActiveObject(activeObject.canvas?.getObjects()[0])
-      activeObject.canvas?.remove(activeObject)
+    if(frame?.name === 'line') {
+      setActiveObject(prev => {
+        prev?.canvas?.remove(frame)
+        return prev
+      })
+      setFrame(null)
       return
     }
 
-    const width = activeObject.canvas?.width
-    const height = activeObject.canvas?.height
-
-    if(!width || !height) return
-
     fabric.Image.fromURL('../../../../../frame/line.png', (img) => {
-      img.width && img.scale(width / img.width)
-      img.name = 'line'
-      img.evented = false
+      
+      setActiveObject(prev => {
+        prev?.canvas?.width && img.width && img.scale(prev.canvas.width / img.width)
+        img.name = 'line'
+        img.evented = false
 
+        if(frame?.name) {
+          prev?.canvas?.remove(frame)
+        }
 
-      if(activeObject.name) {
-        setActiveObject(prev => {
-          prev?.canvas?.remove(prev)
-          return prev
-        })
-      }
+        prev?.canvas?.add(img)
+        prev?.canvas?.renderAll()
+        
+        return prev
+      })
 
-      activeObject.canvas?.add(img)
-      activeObject.canvas?.renderAll()
-      setActiveObject(img)
+      setFrame(img)
     })
   }
 
@@ -38,7 +38,7 @@ const Line = ({ activeObject, setActiveObject }: ActiveProps) => {
     <FrameTemplate
       name='ライン'
       image='/frame/line.png'
-      selected={ activeObject.name === 'line' }
+      selected={ frame?.name === 'line' }
       handle={ handleTemplate }
     />
   )

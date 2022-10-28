@@ -1,35 +1,36 @@
 import { fabric } from 'fabric'
-import type { ActiveProps } from '@/types/type'
+import type { FrameTemplateProps } from '@/types/type'
 import FrameTemplate from '@/atoms/FrameTemplate'
 
-const Neon = ({ activeObject, setActiveObject }: ActiveProps) => {  
+const Neon = ({ setActiveObject, frame, setFrame }: FrameTemplateProps) => {  
   const handleTemplate = () => {
-    if(activeObject.name === 'neon') {
-      setActiveObject(activeObject.canvas?.getObjects()[0])
-      activeObject.canvas?.remove(activeObject)
+    if(frame?.name === 'neon') {
+      setActiveObject(prev => {
+        prev?.canvas?.remove(frame)
+        return prev
+      })
+      setFrame(null)
       return
     }
 
-    const width = activeObject.canvas?.width
-    const height = activeObject.canvas?.height
-
-    if(!width || !height) return
-
     fabric.Image.fromURL('../../../../../frame/neon.png', (img) => {
-      img.width && img.scale(width / img.width)
-      img.name = 'neon'
-      img.evented = false
+      
+      setActiveObject(prev => {
+        prev?.canvas?.width && img.width && img.scale(prev.canvas.width / img.width)
+        img.name = 'neon'
+        img.evented = false
 
-      if(activeObject.name) {
-        setActiveObject(prev => {
-          prev?.canvas?.remove(prev)
-          return prev
-        })
-      }
+        if(frame?.name) {
+          prev?.canvas?.remove(frame)
+        }
 
-      activeObject.canvas?.add(img)
-      activeObject.canvas?.renderAll()
-      setActiveObject(img)
+        prev?.canvas?.add(img)
+        prev?.canvas?.renderAll()
+        
+        return prev
+      })
+
+      setFrame(img)
     })
   }
 
@@ -37,7 +38,7 @@ const Neon = ({ activeObject, setActiveObject }: ActiveProps) => {
     <FrameTemplate
       name='ネオン'
       image='/frame/neon.png'
-      selected={ activeObject.name === 'neon' }
+      selected={ frame?.name === 'neon' }
       handle={ handleTemplate }
     />
   )

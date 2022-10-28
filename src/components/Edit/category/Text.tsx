@@ -21,9 +21,9 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
   }]
 
   const handleAdd = () => {
-    const width = activeObject.canvas?.width
-    const height = activeObject.canvas?.height
-    const zoom = activeObject.canvas?.getZoom()
+    const width = activeObject?.canvas?.width
+    const height = activeObject?.canvas?.height
+    const zoom = activeObject?.canvas?.getZoom()
 
     const textCanvas = new fabric.Textbox('タイトルテキスト', {
       originX: 'center',
@@ -39,9 +39,9 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
       textAlign: 'center'
     })
 
-    activeObject.canvas?.add(textCanvas)
-    activeObject.canvas?.setActiveObject(textCanvas)
-    activeObject.canvas?.renderAll()
+    activeObject?.canvas?.add(textCanvas)
+    activeObject?.canvas?.setActiveObject(textCanvas)
+    activeObject?.canvas?.renderAll()
 
     setActiveObject(textCanvas)
     setTabNumber(0)
@@ -49,7 +49,7 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
 
   const handleDelete = () => {
     setActiveObject(prev => prev?.canvas?.getObjects()[0])
-    activeObject.canvas?.remove(activeObject)
+    activeObject?.canvas?.remove(activeObject)
   }
 
   return (

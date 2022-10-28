@@ -18,3 +18,9 @@ export type ActiveProps = {
   activeObject: fabric.Object
   setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>>
 }
+
+export type FrameTemplateProps =  {
+  setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>>
+  frame: fabric.Image | null
+  setFrame: Dispatch<SetStateAction<fabric.Image | null>>
+}

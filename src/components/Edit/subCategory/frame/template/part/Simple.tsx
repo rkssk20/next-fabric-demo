@@ -1,35 +1,36 @@
 import { fabric } from 'fabric'
-import type { ActiveProps } from '@/types/type'
+import type { FrameTemplateProps } from '@/types/type'
 import FrameTemplate from '@/atoms/FrameTemplate'
 
-const Simple = ({ activeObject, setActiveObject }: ActiveProps) => {  
+const Simple = ({ setActiveObject, frame, setFrame }: FrameTemplateProps) => {  
   const handleTemplate = () => {
-    if(activeObject.name === 'simple') {
-      setActiveObject(activeObject.canvas?.getObjects()[0])
-      activeObject.canvas?.remove(activeObject)
+    if(frame?.name === 'simple') {
+      setActiveObject(prev => {
+        prev?.canvas?.remove(frame)
+        return prev
+      })
+      setFrame(null)
       return
     }
 
-    const width = activeObject.canvas?.width
-    const height = activeObject.canvas?.height
+    fabric.Image.fromURL('/../../../../../frame/simple.png', (img) => {
+      
+      setActiveObject(prev => {
+        prev?.canvas?.width && img.width && img.scale(prev.canvas.width / img.width)
+        img.name = 'simple'
+        img.evented = false
 
-    if(!width || !height) return
+        if(frame?.name) {
+          prev?.canvas?.remove(frame)
+        }
 
-    fabric.Image.fromURL('../../../../../frame/simple.png', (img) => {
-      img.width && img.scale(width / img.width)
-      img.name = 'simple'
-      img.evented = false
+        prev?.canvas?.add(img)
+        prev?.canvas?.renderAll()
+        
+        return prev
+      })
 
-      if(activeObject.name) {
-        setActiveObject(prev => {
-          prev?.canvas?.remove(prev)
-          return prev
-        })
-      }
-
-      activeObject.canvas?.add(img)
-      activeObject.canvas?.renderAll()
-      setActiveObject(img)
+      setFrame(img)
     })
   }
 
@@ -37,7 +38,7 @@ const Simple = ({ activeObject, setActiveObject }: ActiveProps) => {
     <FrameTemplate
       name='シンプル'
       image='/frame/simple.png'
-      selected={ activeObject.name === 'simple' }
+      selected={ frame?.name === 'simple' }
       handle={ handleTemplate }
     />
   )
