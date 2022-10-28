@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { fabric } from "fabric"
+import WebFont from "webfontloader"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 import Font from "@/atoms/Font"
 
@@ -74,6 +75,38 @@ const Fonts = ({ activeObject }: { activeObject: fabric.Text }) => {
   }
   
   const setTargetRef = useIntersectionObserver(handleMore)
+
+  useEffect(() => {
+    if(value === '' || value === 'Noto Sans JP') return
+  
+    WebFont.load({
+      google: {
+        families: [value]
+      },
+      // 読み込み時
+      loading: () => {
+        activeObject.set({
+          opacity: 0
+        })
+        activeObject.canvas?.renderAll()
+      },
+      // 完了時
+      active: () => {
+        activeObject.set({
+          fontFamily: value,
+          opacity: 1
+        })
+        activeObject.canvas?.renderAll()
+      },
+      // 失敗時
+      inactive: () => {        
+        activeObject.set({
+          opacity: 1
+        })
+        activeObject.canvas?.renderAll()
+      }
+    })
+  }, [value])
 
   // フォント変更
   const handleFont = (fontFamily: string) => {    

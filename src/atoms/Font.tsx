@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from "react"
 import Head from "next/head"
 
 type Props = {
-  setTargetRef: Dispatch<SetStateAction<HTMLDivElement | null>> | undefined
+  setTargetRef: Dispatch<SetStateAction<HTMLButtonElement | null>> | undefined
   fontFamily: string
   disabled: boolean
   handleFont: (fontFamily: string) => void
@@ -10,7 +10,7 @@ type Props = {
 
 const Font = ({ setTargetRef, fontFamily, disabled, handleFont }: Props) => {
   return (
-    <div ref={ setTargetRef }>
+    <>
       <Head>
         <style>
           @import url({`https://fonts.googleapis.com/css2?family=${ fontFamily.replace(/ /g, '+') }&text=${ fontFamily.replace(/ /g, '') }&display=swap`});
@@ -19,6 +19,7 @@ const Font = ({ setTargetRef, fontFamily, disabled, handleFont }: Props) => {
 
       <button
         style={{ fontFamily: fontFamily }}
+        ref={ setTargetRef }
         className={ `
           w-[calc(100%-64px)]
           my-1
@@ -38,7 +39,7 @@ const Font = ({ setTargetRef, fontFamily, disabled, handleFont }: Props) => {
       >
         { fontFamily }
       </button>
-    </div>
+    </>
   )
 }
 

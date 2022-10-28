@@ -14,7 +14,7 @@ const Background = ({ activeObject }: { activeObject: fabric.Text }) => {
     if(!activeObject.textBackgroundColor) return
 
     const rgba = activeObject.textBackgroundColor.replace('rgba(', '').replace(')', '').split(',')
-    const hex = RGBtoHex(rgba.slice(0, 3))
+    const hex = RGBtoHex(rgba.slice(0, 3))    
 
     setColor({
       rgb: `${ rgba[0] },${ rgba[1] },${ rgba[2] }`,

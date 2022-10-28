@@ -35,7 +35,21 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
   }
 
   const handleCategory = (e: MouseEvent<HTMLButtonElement>, index: number) => {
-    (index === 0) && setActiveObject(prev => prev?.canvas?.getObjects()[0])
+    if(index === 0) setActiveObject(prev => prev?.canvas?.getObjects()[0])
+
+    if(index === 2) {
+      setActiveObject(prev => {
+        let obj = prev?.canvas?.getObjects()[0]
+
+        prev?.canvas?.getObjects().map(item => {
+          if(item.name) {
+            obj = item
+          }
+        })
+
+        return obj
+      })
+    }
 
     setCategory(index)
   }
@@ -154,8 +168,9 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
             (category === 0) ?
             <Filter activeObject={ activeObject as fabric.Image } /> :
             (category === 1) ?
-            <Text activeObject={ activeObject } setActiveObject={ setActiveObject } /> :
-            <Frame />
+            <Text activeObject={ activeObject } setActiveObject={ setActiveObject } />
+            :
+            <Frame activeObject={ activeObject } setActiveObject={ setActiveObject } />
           )
         }
       </div>

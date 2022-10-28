@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react"
+
 export type ShadowState = {
   rgb: string
   hex: string
@@ -10,4 +12,9 @@ export type ShadowState = {
 export type ColorState = {
   hex: string
   rgb: string
+}
+
+export type ActiveProps = {
+  activeObject: fabric.Object
+  setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>>
 }

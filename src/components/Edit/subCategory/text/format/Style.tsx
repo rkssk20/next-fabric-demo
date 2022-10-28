@@ -120,26 +120,24 @@ const Style = ({ activeObject }: { activeObject: fabric.Text }) => {
           styleList.map(item => (
             <button
               key={ item.value }
-              className={
-                `
+              className={ `
                 min-w-[70px]
                 min-h-[70px]
-                  p-2
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
-                  text-xs
-                  rounded-2xl
-                  duration-200
-                  border
-                  border-ogp-border
-                  border-solid
-                  hover:bg-[#efefef]
-                  active:bg-[#e5e5e5]
-                  ${ item.selected && 'bg-[#e5e5e5]' }
-                  `
-              }
+                p-2
+                flex
+                flex-col
+                items-center
+                justify-center
+                text-xs
+                rounded-2xl
+                duration-200
+                border
+                border-ogp-border
+                border-solid
+                hover:bg-[#efefef]
+                active:bg-[#e5e5e5]
+                ${ item.selected && 'bg-[#e5e5e5]' }
+              ` }
               onClick={ item.handle }
             >
               { item.icon }

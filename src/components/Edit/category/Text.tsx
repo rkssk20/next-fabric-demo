@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { fabric } from 'fabric'
+import type { ActiveProps } from '@/types/type'
 import SubCategoryButton from '@/atoms/SubCategoryButton'
 import Format from '@/components/Edit/subCategory/text/format'
 import Fonts from '@/components/Edit/subCategory/text/Fonts'
 import Effect from '@/components/Edit/subCategory/text/effect'
 
-const Text = ({ activeObject, setActiveObject }: { activeObject: fabric.Object, setActiveObject: Dispatch<SetStateAction<fabric.Object | undefined>> }) => {
+const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
   const [tabNumber, setTabNumber] = useState<number>(0)
   
   const subcategory_list = [{
@@ -24,7 +25,7 @@ const Text = ({ activeObject, setActiveObject }: { activeObject: fabric.Object, 
     const height = activeObject.canvas?.height
     const zoom = activeObject.canvas?.getZoom()
 
-    const textCanvas = new fabric.Textbox('テキストを入力', {
+    const textCanvas = new fabric.Textbox('タイトルテキスト', {
       originX: 'center',
       originY: 'center',
       top: (height && zoom)? ((height / zoom) / 2) : 0,

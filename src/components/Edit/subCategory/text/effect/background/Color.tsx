@@ -20,7 +20,7 @@ const Color = ({ color, setColor, opacity, activeObject }:Props) => {
     })
 
     activeObject.set({
-      stroke: `rgba(${ rgb },${ opacity })`
+      textBackgroundColor: `rgba(${ rgb },${ opacity })`
     })
 
     activeObject.canvas?.renderAll()
