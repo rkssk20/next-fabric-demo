@@ -1,29 +1,34 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { fabric } from 'fabric'
 import type { ActiveProps } from '@/types/type'
 import SubCategoryButton from '@/atoms/SubCategoryButton'
+import Explanation from '@/components/Edit/subCategory/text/Explanation'
 import Format from '@/components/Edit/subCategory/text/format'
 import Fonts from '@/components/Edit/subCategory/text/Fonts'
 import Effect from '@/components/Edit/subCategory/text/effect'
 
 const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
-  const [tabNumber, setTabNumber] = useState<number>(0)
+  const [subCategory, setSubCategory] = useState<number | null>(null)
   
   const subcategory_list = [{
     name: 'フォーマット',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe23c;</span>
+    icon: <span className="pb-2 material-symbols-rounded">&#xe23c;</span>
   }, {
     name: 'フォント',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe167;</span>
+    icon: <span className="pb-2 material-symbols-rounded">&#xe167;</span>
   }, {
     name: 'エフェクト',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe65f;</span>
+    icon: <span className="pb-2 material-symbols-rounded">&#xe65f;</span>
   }]
+
+  useEffect(() => {
+    (activeObject instanceof fabric.Text) && setSubCategory(0)
+  }, [activeObject])
 
   const handleAdd = () => {
     const width = activeObject?.canvas?.width
     const height = activeObject?.canvas?.height
-    const zoom = activeObject?.canvas?.getZoom()
+    const zoom = activeObject?.canvas?.getZoom();
 
     const textCanvas = new fabric.Textbox('タイトルテキスト', {
       originX: 'center',
@@ -44,12 +49,12 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
     activeObject?.canvas?.renderAll()
 
     setActiveObject(textCanvas)
-    setTabNumber(0)
   }
 
   const handleDelete = () => {
     setActiveObject(prev => prev?.canvas?.getObjects()[0])
     activeObject?.canvas?.remove(activeObject)
+    setSubCategory(null)
   }
 
   return (
@@ -65,12 +70,11 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
       >
         <button
           className='
-            min-w-[90px]
+            min-w-[80px]
             p-2
             flex
             flex-col
             items-center
-            justify-center
             text-xs
             duration-200
             border-b-4
@@ -80,33 +84,38 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
           '
           onClick={ handleAdd }
         >
-          <span className="pb-2 text-2xl material-symbols-rounded">&#xe145;</span>
+          <span className="pb-2 material-symbols-rounded">&#xe145;</span>
           追加
         </button>
 
         <button
           className={ `
-            min-w-[90px]
+            min-w-[80px]
             p-2
             flex
             flex-col
             items-center
-            justify-center
             text-xs
             duration-200
             border-b-4
             border-transparent
-            hover:bg-[#efefef]
-            active:bg-[#e5e5e5]
             ${
-                !(activeObject instanceof fabric.Text) &&
-                `text-gray-400 border-transparent`
+                !(activeObject instanceof fabric.Text) ?
+                `
+                  text-gray-400
+                  border-transparent
+                `
+                :
+                `
+                  hover:bg-[#efefef]
+                  active:bg-[#e5e5e5]
+                `
               }
           ` }
           disabled={ !(activeObject instanceof fabric.Text) }
           onClick={ handleDelete }
         >
-          <span className="pb-2 text-2xl material-symbols-rounded">&#xe872;</span>
+          <span className="pb-2 material-symbols-rounded">&#xe872;</span>
           削除
         </button>
 
@@ -126,8 +135,8 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
                 name={ item.name }
                 icon={ item.icon }
                 disabled={ !(activeObject instanceof fabric.Text) }
-                handle={ () => setTabNumber(index) }
-                select={ (tabNumber === index) }
+                handle={ () => setSubCategory(index) }
+                select={ (subCategory === index) }
               />
             ))
           }
@@ -136,16 +145,14 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
 
       {/* テキスト編集 */}
       {
-        (activeObject instanceof fabric.Text) && (
-          (tabNumber === 0) ?
-          // <Input canvas={ canvas } /> :
-          <Format activeObject={ activeObject as fabric.Text } /> :
-          (tabNumber === 1) ?
-          <Fonts activeObject={ activeObject as fabric.Text } /> :
-          (tabNumber === 2) &&
-          <Effect activeObject={ activeObject as fabric.Text } />
-          // (tabNumber === 3) &&
-        )
+        (subCategory === null) ?
+        <Explanation /> :
+        (subCategory === 0) ?
+        <Format activeObject={ activeObject as fabric.Text } /> :
+        (subCategory === 1) ?
+        <Fonts activeObject={ activeObject as fabric.Text } /> :
+        (subCategory === 2) &&
+        <Effect activeObject={ activeObject as fabric.Text } />
       }
     </>
   )

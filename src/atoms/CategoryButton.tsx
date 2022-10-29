@@ -17,7 +17,6 @@ const CategoryButton = ({ name, handle, icon, select, index }: Props) => {
         flex
         flex-col
         items-center
-        justify-center
         border-b-4
         ${select ?
           `
@@ -36,7 +35,7 @@ const CategoryButton = ({ name, handle, icon, select, index }: Props) => {
     >
       { icon }
 
-      { name }
+      <p className="mt-2 text-xs">{ name }</p>
     </button>
   )
 }

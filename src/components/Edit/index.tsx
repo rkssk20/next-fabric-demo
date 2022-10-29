@@ -1,31 +1,32 @@
 import { useState, MouseEvent } from "react"
 import { useRouter } from "next/router"
+import dynamic from "next/dynamic";
 import useCanvas from "@/hooks/useCanvas";
+import useScreenWidth from "@/hooks/useScreenWidth";
 import useImage from "@/hooks/useImage";
 import Header from '@/atoms/Header'
 import CategoryButton from "@/atoms/CategoryButton";
-import Filter from '@/components/Edit/category/Filter'
-import Text from '@/components/Edit/category/Text'
-import Frame from '@/components/Edit/category/Frame'
+import Filter from'@/components/Edit/category/Filter'
+
+const Text = dynamic(() => import('@/components/Edit/category/Text'))
+const Frame = dynamic(() => import('@/components/Edit/category/Frame'))
 
 const Edit = ({ cropImage }: { cropImage: string }) => {
   const [category, setCategory] = useState<number | null>(null)
   const router = useRouter()
   const image = useImage(cropImage)
   const { activeObject, setActiveObject } = useCanvas(image, setCategory)
-
-  console.log(activeObject);
-  
+  const innerWidth = useScreenWidth()
 
   const category_list = [{
     name: 'フィルター',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe43b;</span>
+    icon: <span className="material-symbols-rounded">&#xe43b;</span>
   }, {
     name: 'テキスト',
-    icon: <span className="pb-2 text-2xl material-symbols-rounded">&#xe264;</span>
+    icon: <span className="material-symbols-rounded">&#xe264;</span>
   }, {
     name: 'フレーム',
-    icon:  <span className="pb-2 text-2xl material-symbols-rounded">&#xf0d9;</span>
+    icon:  <span className="material-symbols-rounded">&#xf0d9;</span>
   }]
 
   const handleNext = () => {
@@ -49,8 +50,6 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
         w-full
         lg:w-[calc(100%-32px)]
         max-w-5xl
-        h-[calc(100vh-54px)]
-        lg:h-[calc(100vh-85px)]
         mt-[54px]
         lg:mt-[69px]
         lg:mx-auto
@@ -65,6 +64,10 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
         lg:rounded-2xl
         overflow-hidden
       "
+      style={{
+        height:
+          (innerWidth && (innerWidth < 768)) ?  (window.innerHeight - 54) : (window.innerHeight - 85)
+      }}
     >
       {/* ヘッダー */}
       <Header
@@ -128,7 +131,6 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
         <div
           className="
             w-full
-            min-h-[85px]
             flex
             overflow-x-scroll
             border-b

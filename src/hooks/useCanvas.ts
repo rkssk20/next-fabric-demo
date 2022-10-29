@@ -8,7 +8,7 @@ const useCanvas = (
 ) => {
   const [canvas, setCanvas] = useState<fabric.Canvas>()
   const [activeObject, setActiveObject] = useState<fabric.Object>()
-  useScreenWidth(canvas)
+  const innerWidth = useScreenWidth()
 
   // キャンバスの作成、画像の追加
   useEffect(() => {
@@ -135,7 +135,7 @@ const useCanvas = (
     
     // レンダリング
     fabricCanvas.renderAll()
-    // キャンバスの状態をセット
+    // キャンバスをセット
     setCanvas(fabricCanvas)
     // カテゴリをフィルターにセット
     setCategory(0)
@@ -145,6 +145,19 @@ const useCanvas = (
       fabricCanvas.dispose()
     }
   }, [image])
+
+  // キャンバスサイズの変更
+  useEffect(() => {
+    if(!innerWidth) return
+
+    const width = document.querySelector('#stage-parent')?.clientWidth
+    if(!width || !canvas) return
+    
+    canvas.setZoom(canvas.width ? ((width / canvas.width) * canvas.getZoom()) : 1)
+    .setWidth(width)
+    .setHeight(width * 0.5625)
+    .renderAll()
+  }, [innerWidth])
 
   return { activeObject, setActiveObject }
 }

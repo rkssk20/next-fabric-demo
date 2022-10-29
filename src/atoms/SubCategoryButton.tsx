@@ -11,12 +11,11 @@ const SubCategoryButton = ({ name, icon, handle, disabled, select }: Props) => {
     <button
       className={
         `
-          min-w-[90px]
+          min-w-[88px]
           p-2
           flex
           flex-col
           items-center
-          justify-center
           text-xs
           border-b-4
           ${ disabled ?

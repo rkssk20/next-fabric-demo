@@ -1,7 +1,9 @@
 import { useState, useEffect  } from 'react'
 
 // 画面幅に関するフック
-const useScreenWidth = (canvas: fabric.Canvas | undefined) => {
+const useScreenWidth = () => {
+  const [innerWidth, setInnerWidth] = useState<number>()
+
   useEffect(() =>{
     // 画面幅の変更
     const handleResize = () => {
@@ -9,22 +11,10 @@ const useScreenWidth = (canvas: fabric.Canvas | undefined) => {
 
       clearTimeout(timeId)
 
-      // 0.5秒ごと
+      // 0.3秒ごと
       timeId = window.setTimeout(() => {
-        const parent = document.querySelector('#stage-parent')   
-
-        if(!parent || !canvas) return
-
-        const width = parent.clientWidth
-
-        canvas.setZoom(
-          canvas.width ? (width / canvas.width) * canvas.getZoom() : 1
-        ).setWidth(
-          width
-        ).setHeight(
-          width * 0.5625
-        ).renderAll()
-      }, 500)
+        setInnerWidth(window.innerWidth)
+      }, 300)
     }
 
     handleResize()
@@ -36,7 +26,9 @@ const useScreenWidth = (canvas: fabric.Canvas | undefined) => {
       // アンマウント時に監視を解除
       window.removeEventListener('resize', handleResize)
     }
-  }, [canvas])
+  }, [])
+
+  return innerWidth
 }
 
 export default useScreenWidth

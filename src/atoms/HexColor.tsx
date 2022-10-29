@@ -184,7 +184,7 @@ const HexColor = ({ value, handle }: HexColorProps) => {
         
         <HexColorInput
           className='
-            w-[calc(100%-80px)]
+            w-full
             py-2
             pr-2
             pl-6

@@ -16,17 +16,7 @@ a {
   box-sizing: border-box;
 }
 
-.noto-sans {
-  font-family: 'Noto Sans JP';
-  opacity: 0;
-}
-
-.wf-inactive .noto-sans {
-  opacity: 1;
-}
-
 .material-symbols-rounded {
-  color: '#edf1f4';
   font-variation-settings:
   'FILL' 0,
   'wght' 600,
