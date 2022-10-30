@@ -8,19 +8,19 @@ const Explanation = () => {
       <div className="mt-4 flex items-center">
         <div
           className='
-            w-[80px]
+            w-20
+            h-[68px]
             p-2
             flex
             flex-col
             items-center
-            text-xs
             border
             border-ogp-border
             border-solid
           '
         >
-          <span className="pb-2 text-2xl material-symbols-rounded">&#xe145;</span>
-          追加
+          <span className="material-symbols-rounded">&#xe145;</span>
+          <p className="mt-2 text-xs">追加</p>
         </div>
 
         <p className="ml-4">をクリック</p>

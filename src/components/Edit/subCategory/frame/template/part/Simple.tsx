@@ -13,7 +13,7 @@ const Simple = ({ setActiveObject, frame, setFrame }: FrameTemplateProps) => {
       return
     }
 
-    fabric.Image.fromURL('/../../../../../frame/simple.png', (img) => {
+    fabric.Image.fromURL('../../../../../frame/simple.png', (img) => {
       
       setActiveObject(prev => {
         prev?.canvas?.width && img.width && img.scale(prev.canvas.width / img.width)

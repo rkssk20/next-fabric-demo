@@ -19,7 +19,7 @@ const Frame = ({ activeObject, setActiveObject }: ActiveProps) => {
   }, [])
 
   return (
-    <div className='w-full mt-6 grid grid-cols-3'>      
+    <div className='w-full mt-6 grid grid-cols-3 overflow-y-scroll'>      
       <Simple
         setActiveObject={ setActiveObject }
         frame={ frame }

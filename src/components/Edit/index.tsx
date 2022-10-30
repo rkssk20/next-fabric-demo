@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from "react"
+import { useState, MouseEvent, Dispatch, SetStateAction } from "react"
 import { useRouter } from "next/router"
 import dynamic from "next/dynamic";
 import useCanvas from "@/hooks/useCanvas";
@@ -12,7 +12,12 @@ import Filter from'@/components/Edit/category/Filter'
 const Text = dynamic(() => import('@/components/Edit/category/Text'), { loading: () => <Loader /> })
 const Frame = dynamic(() => import('@/components/Edit/category/Frame'), { loading: () => <Loader /> })
 
-const Edit = ({ cropImage }: { cropImage: string }) => {
+type Props = {
+  cropImage: string
+  setResultImage: Dispatch<SetStateAction<string>>
+}
+
+const Edit = ({ cropImage, setResultImage }: Props) => {
   const [category, setCategory] = useState<number | null>(null)
   const router = useRouter()
   const image = useImage(cropImage)
@@ -31,9 +36,13 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
   }]
 
   const handleNext = () => {
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement
+    const image = canvas.toDataURL('image/jpeg')
+    setResultImage(image)
+
     router.push({
       pathname: '/',
-      query: { step: 'result' }
+      query: { step: 'post' }
     }, undefined, {
       shallow: true
     })

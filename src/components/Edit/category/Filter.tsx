@@ -93,7 +93,7 @@ const Filter = ({ activeObject }: { activeObject: fabric.Image }) => {
     if(state === null) {
       applyFilter({ filter, value, setState })
     } else {
-      applyFilterValue({ filter, value, setState, index: state.index })
+      applyFilterValue({ filter, value, setState, index: state.index }).then(() => console.log('a'))
     }
   }  
 

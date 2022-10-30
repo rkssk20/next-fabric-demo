@@ -7,10 +7,12 @@ import Upload from '@/components/Upload'
 
 const Crop = dynamic(() => import('@/components/Crop'), { loading: ()=> <Loader /> })
 const Edit = dynamic(() => import('@/components/Edit'), { loading: () => <Loader />, ssr: false })
+const Post = dynamic(() => import('@/components/Post'), { loading: () => <Loader /> })
 
 const Home: NextPage = () => {
   const [selectImage, setSelectImage] = useState('')
   const [cropImage, setCropImage] = useState('')
+  const [resultImage, setResultImage] = useState('')
   const router = useRouter()
 
   return (
@@ -18,7 +20,10 @@ const Home: NextPage = () => {
     <Crop selectImage={ selectImage } setCropImage={ setCropImage } />
     :
     (router.query.step === 'edit') ?
-    <Edit cropImage={ cropImage } />
+    <Edit cropImage={ cropImage } setResultImage={ setResultImage} />
+    :
+    (router.query.step === 'post') ?
+    <Post resultImage={ resultImage } />
     :
     <Upload setSelectImage={ setSelectImage } />
   )
