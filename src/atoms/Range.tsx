@@ -19,11 +19,12 @@ const Range = ({ name, min, max, value, handle }: RangeType) => {
           mt-2
           flex
           justify-between
+          items-center
         "
       >
         <input
           className={
-            `w-[calc(100%-50px)] ${ styles.range }`
+            `w-full ${ styles.range }`
           }
           type='range'
           min={ min }
@@ -32,7 +33,7 @@ const Range = ({ name, min, max, value, handle }: RangeType) => {
           onChange={ e => handle(Number(e.target.value)) }
         />
 
-        <span className="ml-2 select-none">
+        <span className="min-w-[36px] ml-2 select-none">
           { value }
         </span>
       </div>

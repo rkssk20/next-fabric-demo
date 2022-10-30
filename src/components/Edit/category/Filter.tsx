@@ -55,7 +55,7 @@ const Filter = ({ activeObject }: { activeObject: fabric.Image }) => {
   }, [])
 
   // フィルターの追加
-  const applyFilter = ({ setState, value, filter }: applyFilterType) => {
+  const applyFilter = async ({ setState, value, filter }: applyFilterType) => {
     const index = activeObject.filters?.length
     
     if(index === undefined) return
@@ -73,16 +73,14 @@ const Filter = ({ activeObject }: { activeObject: fabric.Image }) => {
   }
   
   // フィルターの値を変更
-  const applyFilterValue = ({ setState, value, filter, index }: applyFilterValueType) => {
+  const applyFilterValue = async ({ setState, value, filter, index }: applyFilterValueType) => {
     // フィルターの変更
     // @ts-ignore
     activeObject.filters[index] = filter
 
     // フィルターの状態を変更
     setState(prev => {
-      if(!prev) return null
-
-      return { value, index: prev.index }
+      return { value, index: prev?.index ?? 0 }
     })
   
     // レンダリング
