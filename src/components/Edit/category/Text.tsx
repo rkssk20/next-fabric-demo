@@ -12,13 +12,13 @@ const Text = ({ activeObject, setActiveObject  }: ActiveProps) => {
   
   const subcategory_list = [{
     name: 'フォーマット',
-    icon: <span className="pb-2 material-symbols-rounded">&#xe23c;</span>
+    icon: <span className="material-symbols-rounded">&#xe23c;</span>
   }, {
     name: 'フォント',
-    icon: <span className="pb-2 material-symbols-rounded">&#xe167;</span>
+    icon: <span className="material-symbols-rounded">&#xe167;</span>
   }, {
     name: 'エフェクト',
-    icon: <span className="pb-2 material-symbols-rounded">&#xe65f;</span>
+    icon: <span className="material-symbols-rounded">&#xe65f;</span>
   }]
 
   useEffect(() => {

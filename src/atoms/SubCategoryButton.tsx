@@ -45,7 +45,7 @@ const SubCategoryButton = ({ name, icon, handle, disabled, select }: Props) => {
       disabled={ disabled }
     >
       { icon }
-      { name }
+      <p className="mt-2 text-xs">{ name }</p>
     </button>
   )
 }

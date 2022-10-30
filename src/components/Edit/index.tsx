@@ -131,6 +131,7 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
         <div
           className="
             w-full
+            min-h-[67px]
             flex
             overflow-x-scroll
             border-b
