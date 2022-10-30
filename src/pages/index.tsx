@@ -2,10 +2,11 @@ import { useState } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
+import Loader from '@/atoms/Loader'
+import Upload from '@/components/Upload'
 
-const Upload = dynamic(() => import('@/components/Upload'))
-const Crop = dynamic(() => import('@/components/Crop'))
-const Edit = dynamic(() => import('@/components/Edit'), { ssr: false })
+const Crop = dynamic(() => import('@/components/Crop'), { loading: ()=> <Loader /> })
+const Edit = dynamic(() => import('@/components/Edit'), { loading: () => <Loader />, ssr: false })
 
 const Home: NextPage = () => {
   const [selectImage, setSelectImage] = useState('')

@@ -1,7 +1,13 @@
-import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import ProgressProps from '@/atoms/ProgressProps'
+import '@/styles/globals.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <>
+      <ProgressProps />
+      <Component {...pageProps} />
+    </>
+  )
 }
 export default MyApp

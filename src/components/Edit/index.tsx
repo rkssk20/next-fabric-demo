@@ -5,11 +5,12 @@ import useCanvas from "@/hooks/useCanvas";
 import useScreenWidth from "@/hooks/useScreenWidth";
 import useImage from "@/hooks/useImage";
 import Header from '@/atoms/Header'
+import Loader from "@/atoms/Loader";
 import CategoryButton from "@/atoms/CategoryButton";
 import Filter from'@/components/Edit/category/Filter'
 
-const Text = dynamic(() => import('@/components/Edit/category/Text'))
-const Frame = dynamic(() => import('@/components/Edit/category/Frame'))
+const Text = dynamic(() => import('@/components/Edit/category/Text'), { loading: () => <Loader /> })
+const Frame = dynamic(() => import('@/components/Edit/category/Frame'), { loading: () => <Loader /> })
 
 const Edit = ({ cropImage }: { cropImage: string }) => {
   const [category, setCategory] = useState<number | null>(null)
@@ -131,7 +132,7 @@ const Edit = ({ cropImage }: { cropImage: string }) => {
         <div
           className="
             w-full
-            min-h-[67px]
+            min-h-[69px]
             flex
             overflow-x-scroll
             border-b

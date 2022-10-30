@@ -5,6 +5,7 @@ import { Point, Area } from "react-easy-crop/types"
 import getCroppedImg from "@/lib/getCroppedImg"
 import Page from '@/atoms/Page'
 import Header from '@/atoms/Header'
+import styles from '@/styles/range.module.css'
 
 type Props = {
   selectImage: string
@@ -96,12 +97,16 @@ const Crop = ({ selectImage, setCropImage }: Props) => {
             items-center
           "
         >
-          <span className="text-3xl mr-1 select-none material-symbols-rounded">
+          <span className="text-3xl select-none material-symbols-rounded">
             &#xe900;
           </span>
 
           <input
-            className="grow mx-1"
+            className={`
+              grow
+              mx-1
+              ${ styles.range }
+            `}
             type='range'
             min={ 1 }
             max={ 3 }
@@ -110,7 +115,7 @@ const Crop = ({ selectImage, setCropImage }: Props) => {
             onChange={ (e) => setZoom(Number(e.target.value)) }
           />
 
-          <span className="text-3xl mr-1 select-none material-symbols-rounded">
+          <span className="text-3xl select-none material-symbols-rounded">
             &#xe8ff;
           </span>
         </div>

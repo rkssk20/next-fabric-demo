@@ -1,3 +1,5 @@
+import styles from '@/styles/range.module.css'
+
 type RangeType = {
   name: string
   min: number
@@ -20,7 +22,9 @@ const Range = ({ name, min, max, value, handle }: RangeType) => {
         "
       >
         <input
-          className="w-[calc(100%-50px)]"
+          className={
+            `w-[calc(100%-50px)] ${ styles.range }`
+          }
           type='range'
           min={ min }
           max={ max }
